@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>A Little Note For You 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+:root{--pink:#ff85a1;--rose:#ff4d79;--lilac:#c39bd3;--lavender:#e8d5f5;--blush:#ffeef4;--peach:#ffd6e0;--gold:#f5c842;--white:#fff9fc;--text:#7b3f6e;--soft:#d4a0c0;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#ffeef4 0%,#e8d5f5 50%,#ffd6e0 100%);min-height:100vh;overflow-x:hidden;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ctext y='24' font-size='20'%3E🌸%3C/text%3E%3C/svg%3E") 16 16,auto;}
+
+/* BG */
+.bg-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;}
+.particle{position:absolute;animation:floatUp linear infinite;opacity:0.4;}
+@keyframes floatUp{0%{transform:translateY(110vh) rotate(0deg);opacity:0}10%{opacity:0.4}90%{opacity:0.4}100%{transform:translateY(-10vh) rotate(360deg);opacity:0}}
+.falling-heart{position:fixed;pointer-events:none;z-index:0;animation:fallHeart linear infinite;opacity:0;}
+@keyframes fallHeart{0%{transform:translateY(-50px) rotate(0deg);opacity:0}5%{opacity:.7}95%{opacity:.7}100%{transform:translateY(110vh) rotate(360deg);opacity:0}}
+
+/* LOADING */
+#loading-screen{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#ffd6e0,#e8d5f5,#ffeef4);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;}
+.loading-emoji{font-size:80px;animation:bounce 1s ease infinite;margin-bottom:20px;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+.loading-title{font-family:'Dancing Script',cursive;font-size:clamp(1.4rem,5vw,2.2rem);color:var(--text);margin-bottom:30px;animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.progress-wrap{width:min(320px,85vw);background:rgba(255,255,255,.5);border-radius:50px;height:14px;overflow:hidden;box-shadow:0 4px 15px rgba(255,133,161,.3);}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--pink),var(--lilac),var(--rose));border-radius:50px;width:0%;transition:width .05s linear;box-shadow:0 0 10px rgba(255,133,161,.6);}
+.progress-pct{font-family:'Dancing Script',cursive;font-size:3rem;font-weight:700;color:var(--rose);margin-top:15px;text-shadow:0 2px 10px rgba(255,77,121,.3);}
+.loading-sub{font-size:.9rem;color:var(--soft);margin-top:10px;font-style:italic;}
+
+/* SECTIONS */
+.section{display:none;min-height:100vh;padding:30px 20px;position:relative;z-index:1;}
+.section.active{display:flex;flex-direction:column;align-items:center;animation:sectionFade .6s ease;}
+@keyframes sectionFade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.section-title{font-family:'Dancing Script',cursive;font-size:clamp(1.8rem,6vw,3rem);color:var(--text);text-align:center;margin-bottom:8px;text-shadow:0 2px 10px rgba(195,155,211,.5);}
+.section-sub{font-size:.9rem;color:var(--soft);text-align:center;margin-bottom:30px;font-style:italic;}
+
+/* HEART CARDS */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:16px;width:100%;max-width:500px;}
+.heart-card{aspect-ratio:1;background:white;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 25px rgba(255,133,161,.2);transition:transform .3s,box-shadow .3s;border:2px solid rgba(255,133,161,.2);position:relative;overflow:hidden;animation:cardIn .5s ease backwards;}
+.heart-card:nth-child(1){animation-delay:.1s}.heart-card:nth-child(2){animation-delay:.2s}.heart-card:nth-child(3){animation-delay:.3s}.heart-card:nth-child(4){animation-delay:.4s}.heart-card:nth-child(5){animation-delay:.5s}.heart-card:nth-child(6){animation-delay:.6s}
+@keyframes cardIn{from{opacity:0;transform:scale(.6) rotate(-5deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.heart-card:hover{transform:translateY(-5px) scale(1.03);box-shadow:0 15px 35px rgba(255,133,161,.35);}
+.heart-card .card-front{font-size:3rem;filter:drop-shadow(0 4px 6px rgba(255,77,121,.3));}
+.heart-card .card-num{font-family:'Dancing Script',cursive;font-size:.85rem;color:var(--soft);margin-top:5px;}
+.heart-card.flipped{animation:flip .6s ease;}
+@keyframes flip{0%{transform:scale(1) rotateY(0)}50%{transform:scale(.8) rotateY(90deg)}100%{transform:scale(1) rotateY(0)}}
+.heart-card.revealed{background:linear-gradient(135deg,#ffeef4,#fff);border-color:var(--pink);}
+.heart-card .card-message{display:none;color:var(--text);text-align:center;padding:8px;font-family:'Dancing Script',cursive;font-size:.9rem;line-height:1.4;}
+.heart-card.revealed .card-front,.heart-card.revealed .card-num{display:none;}
+.heart-card.revealed .card-message{display:block;}
+.pop-heart{position:absolute;pointer-events:none;font-size:20px;animation:popHeart 1s ease forwards;}
+@keyframes popHeart{0%{transform:translate(-50%,-50%) scale(0);opacity:1}80%{transform:translate(-50%,-150%) scale(1.5);opacity:1}100%{transform:translate(-50%,-200%) scale(1);opacity:0}}
+
+/* BALLOONS */
+.balloons-wrap{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;max-width:500px;width:100%;}
+.balloon{position:relative;cursor:pointer;animation:floatBalloon 3s ease-in-out infinite;transform-origin:bottom center;}
+.balloon:nth-child(2){animation-delay:.5s}.balloon:nth-child(3){animation-delay:1s}.balloon:nth-child(4){animation-delay:1.5s}.balloon:nth-child(5){animation-delay:2s}
+@keyframes floatBalloon{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-15px) rotate(3deg)}}
+.balloon-body{width:70px;height:85px;border-radius:50% 50% 50% 50% / 40% 40% 60% 60%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:inset -8px -8px 20px rgba(0,0,0,.1),0 8px 20px rgba(0,0,0,.1);transition:transform .2s;}
+.balloon:hover .balloon-body{transform:scale(1.1);}
+.balloon-string{width:1px;height:40px;background:rgba(0,0,0,.2);margin:0 auto;}
+.balloon.popped{animation:popBalloon .4s ease forwards;}
+@keyframes popBalloon{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(0);opacity:0}}
+.balloon-reveal{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(255,238,244,.9);backdrop-filter:blur(10px);animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.reveal-card{background:white;border-radius:30px;padding:40px 30px;text-align:center;max-width:320px;width:90%;box-shadow:0 20px 60px rgba(255,133,161,.3);animation:revealPop .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes revealPop{from{transform:scale(.3) rotate(-10deg)}to{transform:scale(1) rotate(0)}}
+.reveal-emoji{font-size:4rem;margin-bottom:15px;}
+.reveal-text{font-family:'Dancing Script',cursive;font-size:1.3rem;color:var(--text);line-height:1.6;}
+.reveal-close{margin-top:20px;background:linear-gradient(135deg,var(--pink),var(--rose));color:white;border:none;padding:12px 30px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:1rem;cursor:pointer;box-shadow:0 5px 15px rgba(255,77,121,.3);transition:transform .2s;}
+.reveal-close:hover{transform:scale(1.05);}
+
+/* FORGIVENESS METER */
+#sec-meter{background:transparent;}
+.meter-card{background:white;border-radius:30px;padding:35px 25px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(255,133,161,.25);border:2px solid rgba(255,133,161,.2);position:relative;overflow:hidden;}
+.meter-card-label{font-size:.7rem;letter-spacing:3px;color:var(--soft);text-transform:uppercase;margin-bottom:10px;}
+.meter-card-label span{color:var(--gold);}
+.meter-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--text);margin-bottom:6px;font-style:italic;}
+.meter-sub{font-size:.8rem;color:var(--soft);margin-bottom:25px;line-height:1.5;}
+.meter-display{font-family:'Playfair Display',serif;font-size:4rem;color:var(--rose);font-weight:700;min-height:80px;display:flex;align-items:center;justify-content:center;letter-spacing:-2px;}
+.meter-bar-wrap{background:#f5e6ee;border-radius:50px;height:12px;overflow:hidden;margin:15px 0;position:relative;}
+.meter-bar-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--gold));width:0%;border-radius:50px;transition:width .1s linear;box-shadow:0 0 8px rgba(255,77,121,.5);}
+.meter-error{font-size:.75rem;color:var(--rose);font-weight:600;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:20px;opacity:0;transition:opacity .5s;}
+.meter-error.show{opacity:1;}
+.meter-broken-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--text);margin:15px 0 5px;display:none;}
+.meter-broken-sub{font-size:.85rem;color:var(--soft);line-height:1.5;display:none;margin-bottom:20px;}
+.meter-love-btn{background:linear-gradient(135deg,#8b1a3a,#c0304f);color:white;border:none;padding:14px 40px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;letter-spacing:1px;box-shadow:0 6px 20px rgba(139,26,58,.4);transition:transform .2s;display:none;width:100%;}
+.meter-love-btn:hover{transform:scale(1.03);}
+.meter-system{font-size:.7rem;color:var(--soft);margin-top:15px;display:none;}
+.meter-explode{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:0;}
+.meter-explode.boom{animation:boom .8s ease forwards;}
+@keyframes boom{0%{opacity:0;transform:scale(0)}30%{opacity:1;transform:scale(1.5)}60%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(2)}}
+
+/* CAT */
+#cat-section{justify-content:flex-start;padding-top:40px;}
+.cat-char{font-size:80px;animation:catBounce 2s ease-in-out infinite;margin-bottom:10px;filter:drop-shadow(0 10px 20px rgba(255,133,161,.4));}
+@keyframes catBounce{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+.typewriter-card{background:white;border-radius:30px;padding:30px;max-width:420px;width:100%;box-shadow:0 15px 40px rgba(255,133,161,.2);border:2px solid rgba(255,133,161,.2);margin-top:20px;}
+.typewriter-title{font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--rose);margin-bottom:15px;text-align:center;}
+.typewriter-text{font-family:'Playfair Display',serif;font-size:1rem;color:var(--text);line-height:1.8;font-style:italic;min-height:120px;}
+.cursor-blink{animation:blink .7s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* FINAL */
+#final-section{background:transparent;}
+.final-card{background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,238,244,.9));border-radius:40px;padding:40px 30px;max-width:450px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(255,133,161,.25),0 0 40px rgba(195,155,211,.2);border:2px solid rgba(255,133,161,.3);position:relative;overflow:hidden;}
+.final-glow{position:absolute;inset:-2px;border-radius:42px;background:linear-gradient(45deg,var(--pink),var(--lilac),var(--rose),var(--gold));z-index:-1;animation:glowSpin 3s linear infinite;opacity:.6;}
+@keyframes glowSpin{0%{filter:hue-rotate(0)}100%{filter:hue-rotate(360deg)}}
+.hugcat{font-size:90px;animation:hugBounce 1.5s ease-in-out infinite;filter:drop-shadow(0 10px 20px rgba(255,133,161,.5));margin-bottom:15px;}
+@keyframes hugBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.final-message{font-family:'Dancing Script',cursive;font-size:clamp(1.1rem,4vw,1.5rem);color:var(--text);line-height:1.8;margin-bottom:20px;white-space:pre-wrap;}
+.final-footer{font-family:'Dancing Script',cursive;font-size:1.1rem;color:var(--soft);margin-top:20px;}
+.kawaii-sig{font-size:1.4rem;margin-top:8px;color:var(--rose);font-family:monospace;}
+
+/* NEXT BUTTONS */
+.next-btn{margin-top:30px;background:linear-gradient(135deg,var(--pink),var(--rose));color:white;border:none;padding:14px 40px;border-radius:50px;font-family:'Dancing Script',cursive;font-size:1.2rem;cursor:pointer;box-shadow:0 8px 25px rgba(255,77,121,.35);transition:transform .2s,box-shadow .2s;letter-spacing:.5px;}
+.next-btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 30px rgba(255,77,121,.45);}
+.next-btn:active{transform:scale(.97);}
+
+/* CONFETTI */
+.confetti-piece{position:fixed;pointer-events:none;z-index:999;width:10px;height:10px;border-radius:2px;animation:confettiFall linear forwards;}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* SPARKLE */
+.sparkle{position:fixed;pointer-events:none;z-index:998;width:6px;height:6px;border-radius:50%;animation:sparklePop .6s ease forwards;}
+@keyframes sparklePop{0%{transform:translate(-50%,-50%) scale(0);opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0}}
+
+/* MUSIC */
+.music-note{position:fixed;bottom:20px;right:20px;z-index:100;background:rgba(255,255,255,.7);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 15px rgba(255,133,161,.3);transition:transform .2s;backdrop-filter:blur(5px);}
+.music-note.playing{animation:musicSpin 3s linear infinite;}
+@keyframes musicSpin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+/* PROGRESS DOTS */
+.progress-dots{display:flex;gap:8px;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,133,161,.3);transition:all .3s;}
+.dot.active{background:var(--rose);transform:scale(1.3);}
+
+/* ========= CREATOR MODE (guy's review screen) ========= */
+#creator-screen{position:fixed;inset:0;z-index:9000;background:linear-gradient(160deg,#1a0a2e 0%,#2d1b4e 50%,#1a1040 100%);overflow-y:auto;display:none;}
+#creator-screen.open{display:block;}
+
+.cr-topbar{position:sticky;top:0;z-index:10;background:rgba(26,10,46,.97);backdrop-filter:blur(10px);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,133,161,.2);}
+.cr-topbar-title{font-family:'Dancing Script',cursive;font-size:1.3rem;color:#ff85a1;}
+.cr-badge{background:rgba(245,200,66,.15);color:#f5c842;font-size:.7rem;padding:4px 10px;border-radius:20px;font-weight:700;letter-spacing:1px;}
+
+.cr-hero{text-align:center;padding:50px 20px 30px;}
+.cr-hero-emoji{font-size:70px;display:block;animation:bounce 1.2s ease infinite;margin-bottom:16px;}
+.cr-hero-title{font-family:'Dancing Script',cursive;font-size:clamp(2rem,7vw,3.5rem);color:#ff85a1;margin-bottom:10px;}
+.cr-hero-sub{color:#c39bd3;font-size:.95rem;line-height:1.7;max-width:340px;margin:0 auto;}
+
+/* Preview sections in creator mode */
+.cr-section-preview{max-width:440px;margin:0 auto 30px;background:rgba(255,255,255,.05);border:1px solid rgba(255,133,161,.2);border-radius:24px;padding:24px;transition:transform .2s;}
+.cr-section-preview:hover{transform:translateY(-3px);}
+.cr-section-label{color:#ff85a1;font-family:'Dancing Script',cursive;font-size:1.2rem;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.cr-section-label span{font-size:1.4rem;}
+.cr-section-desc{color:#c39bd3;font-size:.83rem;line-height:1.6;}
+.cr-mini-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.cr-mini-card{aspect-ratio:1;background:rgba(255,238,244,.07);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:1px solid rgba(255,133,161,.15);}
+.cr-mini-balloons{display:flex;gap:8px;margin-top:12px;justify-content:center;}
+.cr-mini-balloon{width:30px;height:36px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;display:flex;align-items:center;justify-content:center;font-size:.8rem;}
+.cr-meter-mini{margin-top:12px;background:rgba(255,238,244,.05);border-radius:14px;padding:14px;text-align:center;}
+.cr-meter-num{font-family:'Playfair Display',serif;font-size:2.5rem;color:#ff4d79;font-weight:700;}
+.cr-meter-bar{height:8px;background:rgba(255,255,255,.1);border-radius:50px;overflow:hidden;margin:8px 0;}
+.cr-meter-bar-fill{height:100%;width:100%;background:linear-gradient(90deg,#ff4d79,#f5c842);border-radius:50px;}
+
+/* Divider */
+.cr-divider{max-width:440px;margin:0 auto 30px;text-align:center;color:rgba(195,155,211,.4);font-size:.8rem;letter-spacing:3px;}
+
+/* Discount section */
+.cr-discount-box{max-width:440px;margin:0 auto 24px;background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.25);border-radius:20px;padding:22px;}
+.cr-discount-title{color:#f5c842;font-family:'Dancing Script',cursive;font-size:1.2rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.cr-codes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.cr-code-chip{background:rgba(255,133,161,.1);border:1px solid rgba(255,133,161,.25);border-radius:10px;padding:10px 12px;}
+.cr-code-chip .code{font-family:monospace;font-size:.95rem;color:#ff85a1;font-weight:700;letter-spacing:1px;}
+.cr-code-chip .code-desc{font-size:.72rem;color:#c39bd3;margin-top:3px;}
+.cr-discount-row{display:flex;gap:8px;}
+.cr-discount-input{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(195,155,211,.3);border-radius:12px;padding:12px 15px;color:#e8d5f5;font-family:'Nunito',sans-serif;font-size:.9rem;outline:none;}
+.cr-discount-input::placeholder{color:rgba(195,155,211,.4);}
+.cr-discount-input:focus{border-color:#ff85a1;}
+.cr-discount-apply{background:rgba(255,133,161,.2);border:1px solid rgba(255,133,161,.4);color:#ff85a1;padding:12px 18px;border-radius:12px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;white-space:nowrap;}
+.cr-discount-apply:hover{background:rgba(255,133,161,.35);}
+.cr-discount-msg{font-size:.8rem;margin-top:8px;min-height:20px;text-align:center;font-style:italic;}
+.cr-discount-msg.success{color:#7ae7b3;}
+.cr-discount-msg.error{color:#ff7a7a;}
+
+/* Price box */
+.cr-price-box{max-width:440px;margin:0 auto 20px;background:rgba(255,133,161,.08);border:1px solid rgba(255,133,161,.2);border-radius:18px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;}
+.cr-price-label{color:#c39bd3;font-size:.85rem;line-height:1.6;}
+.cr-price-right{text-align:right;}
+.cr-price-original{color:rgba(195,155,211,.4);font-size:.8rem;text-decoration:line-through;display:none;}
+.cr-price-amount{font-family:'Dancing Script',cursive;font-size:2.2rem;color:#ff85a1;font-weight:700;line-height:1;}
+.cr-price-saved{font-size:.72rem;color:#7ae7b3;display:none;margin-top:3px;}
+
+.cr-pay-btn{display:block;width:min(440px,calc(100% - 40px));margin:0 auto 14px;background:linear-gradient(135deg,#ff85a1,#ff4d79);color:white;border:none;padding:18px 50px;border-radius:50px;font-family:'Dancing Script',cursive;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 30px rgba(255,77,121,.4);transition:transform .2s,box-shadow .2s;}
+.cr-pay-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 40px rgba(255,77,121,.55);}
+.cr-secure{color:rgba(195,155,211,.45);font-size:.72rem;text-align:center;margin-bottom:60px;}
+
+/* ========= GIRLFRIEND ENTRY SCREEN ========= */
+#gf-entry-screen{position:fixed;inset:0;z-index:6000;background:linear-gradient(135deg,#ffeef4,#e8d5f5,#ffd6e0);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;}
+
+@keyframes cardShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-2deg)}40%{transform:translateX(8px) rotate(2deg)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+</style>
+</head>
+<body>
+
+<div class="bg-particles" id="bgParticles"></div>
+<div id="fallingHearts"></div>
+<div class="music-note" id="musicToggle">🎵</div>
+<div class="progress-dots" id="progressDots"></div>
+
+<!-- ======== GIRLFRIEND ENTRY (shown by default / when no creator mode) ======== -->
+<div id="gf-entry-screen">
+  <div style="font-size:80px;animation:bounce 1s infinite;margin-bottom:20px;">💌</div>
+  <div style="font-family:'Dancing Script',cursive;font-size:clamp(1.8rem,6vw,3rem);color:var(--text);margin-bottom:12px;">A Little Note For You</div>
+  <div style="font-size:.9rem;color:var(--soft);margin-bottom:40px;line-height:1.6;max-width:300px;">Someone made something special just for you. Are you ready? ✨</div>
+  <button onclick="startGfJourney()" style="background:linear-gradient(135deg,var(--pink),var(--rose));color:white;border:none;padding:16px 50px;border-radius:50px;font-family:'Dancing Script',cursive;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 30px rgba(255,77,121,.4);margin-bottom:12px;">
+    💗 Open your surprise
+  </button>
+  <div style="font-size:.75rem;color:var(--soft);">Made with love, just for you 🌸</div>
+</div>
+
+<!-- ======== CREATOR SCREEN (guy's review & payment mode) ======== -->
+<div id="creator-screen">
+  <div class="cr-topbar">
+    <span class="cr-topbar-title">✨ Creator Review</span>
+    <span class="cr-badge">🔐 YOUR VIEW ONLY</span>
+  </div>
+
+  <div class="cr-hero">
+    <span class="cr-hero-emoji">💝</span>
+    <div class="cr-hero-title">Your Apology Website</div>
+    <div class="cr-hero-sub">Review exactly what she'll see ✨<br>Then unlock &amp; send with one tap 💕</div>
+  </div>
+
+  <!-- Section 1 preview -->
+  <div class="cr-section-preview">
+    <div class="cr-section-label"><span>💗</span> Section 1 — Heart Cards</div>
+    <div class="cr-section-desc">She taps each heart card to reveal a personal love message. All 6 must be opened before she can continue.</div>
+    <div class="cr-mini-cards">
+      <div class="cr-mini-card">💗</div><div class="cr-mini-card">💖</div><div class="cr-mini-card">💝</div>
+      <div class="cr-mini-card">🩷</div><div class="cr-mini-card">💓</div><div class="cr-mini-card">🫀</div>
+    </div>
+  </div>
+
+  <!-- Section 2 preview -->
+  <div class="cr-section-preview">
+    <div class="cr-section-label"><span>🎈</span> Section 2 — Pop the Balloons</div>
+    <div class="cr-section-desc">5 floating pastel balloons, each hiding a secret message when she pops them.</div>
+    <div class="cr-mini-balloons">
+      <div class="cr-mini-balloon" style="background:#ffb3c1;">🌸</div>
+      <div class="cr-mini-balloon" style="background:#c3b1e1;">🌙</div>
+      <div class="cr-mini-balloon" style="background:#b5ead7;">⭐</div>
+      <div class="cr-mini-balloon" style="background:#ffd6a5;">🦋</div>
+      <div class="cr-mini-balloon" style="background:#ffc8dd;">🌈</div>
+    </div>
+  </div>
+
+  <!-- Section 3 preview -->
+  <div class="cr-section-preview">
+    <div class="cr-section-label"><span>💔</span> Section 3 — Forgiveness Meter™</div>
+    <div class="cr-section-desc">An AI-themed meter counts up, breaks, and declares her officially too cute for the universe.</div>
+    <div class="cr-meter-mini">
+      <div class="cr-meter-num">∞%</div>
+      <div class="cr-meter-bar"><div class="cr-meter-bar-fill"></div></div>
+      <div style="font-size:.7rem;color:#ff85a1;font-weight:600;">💔 CUTENESS METER OFFICIALLY BROKEN</div>
+    </div>
+  </div>
+
+  <!-- Section 4 preview -->
+  <div class="cr-section-preview">
+    <div class="cr-section-label"><span>🐱</span> Section 4 — Typewriter Love Note</div>
+    <div class="cr-section-desc">A kawaii cat delivers your heartfelt apology letter one character at a time with a blinking cursor.</div>
+    <div style="margin-top:12px;background:rgba(255,238,244,.07);border-radius:12px;padding:12px;font-family:'Playfair Display',serif;font-size:.82rem;color:#c39bd3;font-style:italic;line-height:1.7;">
+      "I know sorry isn't always enough... but I mean every single letter of it..."
+    </div>
+  </div>
+
+  <!-- Section 5 preview -->
+  <div class="cr-section-preview">
+    <div class="cr-section-label"><span>💌</span> Section 5 — Final Message Card</div>
+    <div class="cr-section-desc">A glowing, animated card with your personal message — the emotional climax of the whole experience.</div>
+    <div style="margin-top:12px;text-align:center;font-size:2.5rem;">🤗</div>
+    <div style="text-align:center;font-family:'Dancing Script',cursive;font-size:.9rem;color:#ff85a1;margin-top:6px;">"Your personal words glow here forever ✨"</div>
+  </div>
+
+  <!-- Bonus features preview -->
+  <div class="cr-section-preview">
+    <div class="cr-section-label"><span>✨</span> Plus All These Extras</div>
+    <div class="cr-section-desc" style="line-height:2;">
+      🎵 Soft romantic music-box melody<br>
+      🌸 Floating particles &amp; falling hearts<br>
+      ✨ Sparkle cursor &amp; confetti bursts<br>
+      📱 Fully mobile-responsive<br>
+      💕 Progress dots navigation
+    </div>
+  </div>
+
+  <div class="cr-divider">✦ ✦ ✦ UNLOCK &amp; SEND ✦ ✦ ✦</div>
+
+  <!-- Discount codes (only visible here in creator mode) -->
+  <div class="cr-discount-box">
+    <div class="cr-discount-title"><span>🏷️</span> Your Secret Discount Codes</div>
+    <div class="cr-codes-grid">
+      <div class="cr-code-chip"><div class="code">SORRY50</div><div class="code-desc">50% off 🥺</div></div>
+      <div class="cr-code-chip"><div class="code">LOVE99</div><div class="code-desc">99% off 💕</div></div>
+      <div class="cr-code-chip"><div class="code">FORGIVE</div><div class="code-desc">30% off ✨</div></div>
+      <div class="cr-code-chip"><div class="code">HEART25</div><div class="code-desc">25% off 💗</div></div>
+      <div class="cr-code-chip"><div class="code">MYLOVE</div><div class="code-desc">40% off 🌸</div></div>
+      <div class="cr-code-chip"><div class="code">SORRY10</div><div class="code-desc">10% off 💌</div></div>
+    </div>
+    <div style="color:#c39bd3;font-size:.8rem;margin-bottom:10px;text-align:center;">Apply a code below before paying:</div>
+    <div class="cr-discount-row">
+      <input class="cr-discount-input" id="crDiscountInput" placeholder="e.g. SORRY50" maxlength="20">
+      <button class="cr-discount-apply" onclick="crApplyDiscount()">Apply</button>
+    </div>
+    <div class="cr-discount-msg" id="crDiscountMsg"></div>
+  </div>
+
+  <div class="cr-price-box">
+    <div class="cr-price-label">One-time unlock<br><span style="font-size:.72rem;opacity:.6;">Instant · Your link works forever</span></div>
+    <div class="cr-price-right">
+      <div class="cr-price-original" id="crOriginalPrice">₹149</div>
+      <div class="cr-price-amount" id="crDisplayPrice">₹149</div>
+      <div class="cr-price-saved" id="crSavedLabel"></div>
+    </div>
+  </div>
+
+  <button class="cr-pay-btn" id="crPayBtn" onclick="crStartRazorpay()">💳 Unlock &amp; Send for ₹149</button>
+  <div class="cr-secure">🔒 Secured by Razorpay · Share the link after payment, she sees the full experience</div>
+</div>
+
+<!-- ======== LOADING SCREEN ======== -->
+<div id="loading-screen" style="display:none;">
+  <div class="loading-emoji">💖</div>
+  <div class="loading-title">Measuring your cuteness... ✨</div>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="progress-pct" id="progressPct">0%</div>
+  <div class="loading-sub">Please wait, this might take a while 🌸</div>
+</div>
+
+<!-- ======== SECTION 1: HEART CARDS ======== -->
+<div class="section" id="sec-cards">
+  <div class="section-title">Tap each heart for me 💗</div>
+  <div class="section-sub">Each one holds a little piece of my heart ✨</div>
+  <div class="cards-grid" id="cardsGrid"></div>
+  <button class="next-btn" id="cardsNextBtn" style="display:none;" onclick="showSection('sec-balloons')">Next ✨ Pop some balloons! 🎈</button>
+</div>
+
+<!-- ======== SECTION 2: BALLOONS ======== -->
+<div class="section" id="sec-balloons">
+  <div class="section-title">Pop the balloons! 🎈</div>
+  <div class="section-sub">Each balloon holds a secret just for you 🌸</div>
+  <div class="balloons-wrap" id="balloonsWrap"></div>
+  <button class="next-btn" id="balloonNextBtn" style="display:none;" onclick="showSection('sec-meter')">Keep going 🐾 Check the Meter →</button>
+</div>
+<div class="balloon-reveal" id="balloonReveal" style="display:none;">
+  <div class="reveal-card">
+    <div class="reveal-emoji" id="revealEmoji">🌸</div>
+    <div class="reveal-text" id="revealText"></div>
+    <button class="reveal-close" onclick="closeReveal()">So sweet! 💕</button>
+  </div>
+</div>
+
+<!-- ======== SECTION 3: FORGIVENESS METER ======== -->
+<div class="section" id="sec-meter">
+  <div class="section-title">One more thing... 💔</div>
+  <div class="section-sub">Advanced AI is calculating something important</div>
+  <div class="meter-card" id="meterCard">
+    <div class="meter-card-label"><span>✦</span> COMPLETELY SCIENTIFIC <span>✦</span></div>
+    <div class="meter-title">The Forgiveness Meter™</div>
+    <div class="meter-sub">Advanced AI is calculating exactly how much<br>you deserve to be forgiven right now...</div>
+    <div class="meter-display" id="meterDisplay">???%</div>
+    <div class="meter-bar-wrap"><div class="meter-bar-fill" id="meterBarFill"></div></div>
+    <div class="meter-error" id="meterError">⚡ ERROR: TOO MUCH LOVE DETECTED</div>
+    <div class="meter-explode" id="meterExplode">💥</div>
+    <div class="meter-broken-title" id="meterBrokenTitle">💔 Cuteness Meter Broken</div>
+    <div class="meter-broken-sub" id="meterBrokenSub">You are officially 120% more cute<br>than anyone else in the universe.</div>
+    <button class="meter-love-btn" id="meterLoveBtn" onclick="afterMeter()">I LOVE YOU 💕</button>
+    <div class="meter-system" id="meterSystem">⚡ System Overload · Too much beauty detected. The universe<br>cannot process this level of perfection.</div>
+  </div>
+  <button class="next-btn" id="meterNextBtn" style="display:none;" onclick="showSection('sec-cat')">Continue 🐱 Meet a friend →</button>
+</div>
+
+<!-- ======== SECTION 4: CAT + TYPEWRITER ======== -->
+<div class="section" id="sec-cat">
+  <div class="section-title">A note from the heart 📝</div>
+  <div class="cat-char" id="catChar">🐱</div>
+  <div class="typewriter-card">
+    <div class="typewriter-title">Dear you...</div>
+    <div class="typewriter-text" id="typewriterText"></div>
+  </div>
+  <button class="next-btn" id="catNextBtn" style="display:none;" onclick="showSection('sec-final')">See the final surprise 💝</button>
+</div>
+
+<!-- ======== SECTION 5: FINAL MESSAGE ======== -->
+<div class="section" id="sec-final">
+  <div class="section-title">And finally... 💌</div>
+  <div style="position:relative;width:100%;max-width:450px;">
+    <div class="final-glow"></div>
+    <div class="final-card">
+      <div class="hugcat">🤗</div>
+      <div class="final-message" id="finalMsg"></div>
+      <div class="final-footer">Thank you for reading this ❤️</div>
+      <div class="kawaii-sig">/ᐠ ˵> ⩊ &lt;˵マ</div>
+    </div>
+  </div>
+  <div style="height:80px;"></div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const cardMessages=[
+  {icon:"💗",msg:"I'm so sorry for hurting you. You deserve nothing but love. 🌸"},
+  {icon:"💖",msg:"Every moment without your smile feels incomplete. I miss us. 🥺"},
+  {icon:"💝",msg:"You are my favorite person in this entire universe. 🌙"},
+  {icon:"🩷",msg:"I'd rewrite every mistake just to keep your heart safe. ✨"},
+  {icon:"💓",msg:"You make my world so much warmer. Please forgive me? 🕊️"},
+  {icon:"🫀",msg:"My heart only knows your name. Always & forever. 💫"}
+];
+const balloonColors=["#ffb3c1","#c3b1e1","#b5ead7","#ffd6a5","#ffc8dd"];
+const balloonEmojis=["🌸","🌙","⭐","🦋","🌈"];
+const balloonMessages=[
+  {emoji:"🌸",msg:"You are the softest, kindest soul I've ever known. Thank you for existing. 💕"},
+  {emoji:"🌙",msg:"Even on my worst days, the thought of you makes everything okay. 🌟"},
+  {emoji:"⭐",msg:"I'm sorry. Not just with words, but with every heartbeat. 💗"},
+  {emoji:"🦋",msg:"You're not just someone I love — you're someone I choose every single day. 🌺"},
+  {emoji:"🌈",msg:"Forgive me for the clouds. I promise to be your sunshine. ☀️"}
+];
+const typewriterContent=`I know sorry isn't always enough... but I mean every single letter of it. I never wanted to hurt you, and I'd take back every word that made you cry. You are so, so precious to me — more than I probably show. I see your kindness, your patience, your heart. And I know I don't deserve it right now. But I'm asking anyway, hoping you'll let me try again — to be better, to be kinder, to be everything you deserve.\n\nWith all my love and more 🌸`;
+const finalMessage=`[PASTE MY MESSAGE HERE]\n\nReplace this with your heartfelt custom message. Something personal, vulnerable, and from the soul. This is where your words glow the brightest. ✨💌`;
+
+// ===================== DISCOUNT CODES (creator-only, hidden from GF) =====================
+const DISCOUNT_CODES={
+  "SORRY50":{pct:50,label:"50% off — because you said sorry first 🥺"},
+  "LOVE99":{pct:99,label:"99% off — love is almost free 💕"},
+  "FORGIVE":{pct:30,label:"30% off — forgiveness discount ✨"},
+  "HEART25":{pct:25,label:"25% off — heart discount 💗"},
+  "MYLOVE":{pct:40,label:"40% off — for my love 🌸"},
+  "SORRY10":{pct:10,label:"10% off — sweet little sorry 💌"}
+};
+const BASE_PRICE=149;
+let crCurrentPrice=BASE_PRICE;
+let crAppliedDiscount=null;
+
+function crApplyDiscount(){
+  const code=document.getElementById('crDiscountInput').value.trim().toUpperCase();
+  const msg=document.getElementById('crDiscountMsg');
+  const disc=DISCOUNT_CODES[code];
+  if(!disc){msg.textContent="❌ Invalid code. Try again!";msg.className='cr-discount-msg error';return;}
+  crAppliedDiscount=disc;
+  crCurrentPrice=Math.round(BASE_PRICE*(1-disc.pct/100));
+  msg.textContent="✅ "+disc.label;msg.className='cr-discount-msg success';
+  document.getElementById('crOriginalPrice').style.display='block';
+  document.getElementById('crOriginalPrice').textContent='₹'+BASE_PRICE;
+  document.getElementById('crDisplayPrice').textContent='₹'+crCurrentPrice;
+  document.getElementById('crSavedLabel').style.display='block';
+  document.getElementById('crSavedLabel').textContent='You saved ₹'+(BASE_PRICE-crCurrentPrice)+'! 🎉';
+  document.getElementById('crPayBtn').textContent='💳 Unlock & Send for ₹'+crCurrentPrice;
+  launchConfetti(15);
+}
+
+// ===================== RAZORPAY =====================
+function crStartRazorpay(){
+  const amount=crCurrentPrice*100;
+  const options={
+    key:"rzp_test_XXXXXXXXXX", // ← Replace with your Razorpay Key ID
+    amount:amount,
+    currency:"INR",
+    name:"A Little Note For You",
+    description:"Unlock your romantic apology website 💝",
+    handler:function(response){
+      document.getElementById('creator-screen').style.display='none';
+      crUnlockAndStart();
+    },
+    prefill:{name:"",email:"",contact:""},
+    notes:{purpose:"apology_website",discount:crAppliedDiscount?document.getElementById('crDiscountInput').value:"none"},
+    theme:{color:"#ff4d79"},
+    modal:{ondismiss:function(){console.log('cancelled');}}
+  };
+  try{
+    const rzp=new Razorpay(options);
+    rzp.on('payment.failed',function(){alert('Payment failed. Please try again 💔');});
+    rzp.open();
+  }catch(e){
+    // Dev fallback — remove in production
+    document.getElementById('creator-screen').style.display='none';
+    crUnlockAndStart();
+  }
+}
+
+function crUnlockAndStart(){
+  startLoading();
+}
+
+// ===================== MODE DETECTION =====================
+function detectMode(){
+  const params=new URLSearchParams(window.location.search);
+  const isCreator=params.get('mode')==='creator'||params.get('creator')==='1'||params.get('preview')==='1';
+  if(isCreator){
+    // Guy's review mode
+    document.getElementById('gf-entry-screen').style.display='none';
+    document.getElementById('creator-screen').classList.add('open');
+    initBgParticles();initFallingHearts();
+  }
+  // else: default = girlfriend sees entry screen
+}
+detectMode();
+
+// ===================== GF JOURNEY =====================
+function startGfJourney(){
+  document.getElementById('gf-entry-screen').style.display='none';
+  initBgParticles();initFallingHearts();
+  startLoading();
+}
+
+// ===================== LOADING =====================
+function startLoading(){
+  const ls=document.getElementById('loading-screen');
+  ls.style.display='flex';
+  startMusic();
+  let pct=0;
+  const bar=document.getElementById('progressBar');
+  const pctEl=document.getElementById('progressPct');
+  const interval=setInterval(()=>{
+    pct=Math.min(100,pct+Math.random()*3+.5);
+    bar.style.width=pct+'%';pctEl.textContent=Math.floor(pct)+'%';
+    if(pct>=100){
+      clearInterval(interval);pctEl.textContent='100%';
+      setTimeout(()=>{
+        ls.style.opacity='0';ls.style.transition='opacity .5s';
+        setTimeout(()=>{ls.style.display='none';showSection('sec-cards');},500);
+      },600);
+    }
+  },60);
+}
+
+// ===================== SECTIONS =====================
+const sections=['sec-cards','sec-balloons','sec-meter','sec-cat','sec-final'];
+let currentSection=-1;
+function showSection(id){
+  sections.forEach(s=>document.getElementById(s).classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  currentSection=sections.indexOf(id);
+  updateDots();
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='sec-cards')buildCards();
+  if(id==='sec-balloons')buildBalloons();
+  if(id==='sec-meter')startMeter();
+  if(id==='sec-cat')startTypewriter();
+  if(id==='sec-final')showFinal();
+}
+function updateDots(){
+  const dotsEl=document.getElementById('progressDots');
+  dotsEl.innerHTML='';
+  sections.forEach((s,i)=>{
+    const d=document.createElement('div');d.className='dot'+(i===currentSection?' active':'');
+    dotsEl.appendChild(d);
+  });
+}
+
+// ===================== CARDS =====================
+let revealedCards=0;
+function buildCards(){
+  const grid=document.getElementById('cardsGrid');grid.innerHTML='';revealedCards=0;
+  cardMessages.forEach((cm)=>{
+    const card=document.createElement('div');card.className='heart-card';
+    card.innerHTML=`<div class="card-front">${cm.icon}</div><div class="card-num">Tap me!</div><div class="card-message">${cm.msg}</div>`;
+    card.onclick=()=>revealCard(card);grid.appendChild(card);
+  });
+}
+function revealCard(card){
+  if(card.classList.contains('revealed'))return;
+  card.classList.add('flipped');
+  setTimeout(()=>{
+    card.classList.add('revealed');spawnPopHearts(card);spawnSparkles(card);
+    revealedCards++;
+    if(revealedCards>=cardMessages.length){launchConfetti();setTimeout(()=>document.getElementById('cardsNextBtn').style.display='block',600);}
+  },300);
+}
+function spawnPopHearts(el){
+  const rect=el.getBoundingClientRect();
+  const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
+  ['💗','💖','💕','✨'].forEach((h,i)=>{
+    const span=document.createElement('span');span.className='pop-heart';span.textContent=h;
+    span.style.left=(cx+(Math.random()-.5)*60)+'px';span.style.top=cy+'px';
+    span.style.animationDelay=i*.08+'s';
+    document.body.appendChild(span);setTimeout(()=>span.remove(),1200);
+  });
+}
+
+// ===================== BALLOONS =====================
+let poppedBalloons=0;
+function buildBalloons(){
+  const wrap=document.getElementById('balloonsWrap');wrap.innerHTML='';poppedBalloons=0;
+  balloonMessages.forEach((bm,i)=>{
+    const bal=document.createElement('div');bal.className='balloon';
+    bal.innerHTML=`<div class="balloon-body" style="background:${balloonColors[i]}">${balloonEmojis[i]}</div><div class="balloon-string"></div>`;
+    bal.onclick=()=>popBalloon(bal,bm);wrap.appendChild(bal);
+  });
+}
+function popBalloon(bal,data){
+  if(bal.classList.contains('popped'))return;
+  bal.classList.add('popped');launchConfetti(5);
+  setTimeout(()=>{
+    document.getElementById('revealEmoji').textContent=data.emoji;
+    document.getElementById('revealText').textContent=data.msg;
+    document.getElementById('balloonReveal').style.display='flex';
+    poppedBalloons++;
+  },300);
+}
+function closeReveal(){
+  document.getElementById('balloonReveal').style.display='none';
+  if(poppedBalloons>=balloonMessages.length)setTimeout(()=>document.getElementById('balloonNextBtn').style.display='block',300);
+}
+
+// ===================== FORGIVENESS METER =====================
+function startMeter(){
+  const display=document.getElementById('meterDisplay');
+  const fill=document.getElementById('meterBarFill');
+  const errorEl=document.getElementById('meterError');
+  display.textContent='???%';fill.style.width='0%';errorEl.classList.remove('show');
+  ['meterBrokenTitle','meterBrokenSub','meterLoveBtn','meterSystem'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('meterExplode').classList.remove('boom');
+  document.getElementById('meterNextBtn').style.display='none';
+  const qMarks=['???%','??!%','!??%','!!!%','∞%'];let qi=0;
+  const phase1=setInterval(()=>{display.textContent=qMarks[qi++%qMarks.length];},300);
+  setTimeout(()=>{
+    clearInterval(phase1);let pct=0;
+    const phase2=setInterval(()=>{
+      pct=Math.min(100,pct+2);fill.style.width=pct+'%';display.textContent=pct+'%';
+      if(pct>=100){clearInterval(phase2);setTimeout(()=>meterExplode(),500);}
+    },30);
+  },1800);
+}
+function meterExplode(){
+  const display=document.getElementById('meterDisplay');
+  const fill=document.getElementById('meterBarFill');
+  const errorEl=document.getElementById('meterError');
+  errorEl.classList.add('show');
+  const card=document.getElementById('meterCard');
+  card.style.animation='cardShake .5s ease';setTimeout(()=>card.style.animation='',600);
+  let over=100;
+  const overCount=setInterval(()=>{
+    over+=Math.floor(Math.random()*15+5);display.textContent=over+'%';fill.style.width='100%';
+    fill.style.background='linear-gradient(90deg,#ff4d79,#f5c842,#ff85a1)';
+    if(over>=200){
+      clearInterval(overCount);
+      setTimeout(()=>{
+        document.getElementById('meterExplode').textContent='💥💕💥';
+        document.getElementById('meterExplode').classList.add('boom');
+        display.textContent='∞%';
+        fill.style.background='linear-gradient(90deg,#f5c842,#ff85a1,#c39bd3)';
+        launchConfetti(30);spawnMassHearts();
+        setTimeout(()=>{
+          errorEl.textContent='💔 CUTENESS METER OFFICIALLY BROKEN';
+          document.getElementById('meterBrokenTitle').style.display='block';
+          document.getElementById('meterBrokenSub').style.display='block';
+          document.getElementById('meterLoveBtn').style.display='block';
+          document.getElementById('meterSystem').style.display='block';
+        },800);
+      },300);
+    }
+  },80);
+}
+function afterMeter(){launchConfetti(20);document.getElementById('meterNextBtn').style.display='block';}
+
+// ===================== TYPEWRITER =====================
+let typewriterTimeout;
+function startTypewriter(){
+  const el=document.getElementById('typewriterText');
+  el.innerHTML='<span class="cursor-blink">|</span>';
+  let i=0;clearTimeout(typewriterTimeout);
+  function type(){
+    if(i<=typewriterContent.length){
+      el.innerHTML=typewriterContent.slice(0,i).replace(/\n/g,'<br>')+'<span class="cursor-blink">|</span>';
+      i++;typewriterTimeout=setTimeout(type,i<typewriterContent.length?35:100);
+    }else{document.getElementById('catNextBtn').style.display='block';}
+  }
+  setTimeout(type,800);
+  const cats=['🐱','😺','😻','🐾','💕'];let ci=0;
+  const catEl=document.getElementById('catChar');
+  const catInterval=setInterval(()=>{
+    if(!document.getElementById('sec-cat').classList.contains('active')){clearInterval(catInterval);return;}
+    catEl.textContent=cats[ci++%cats.length];
+  },1500);
+}
+
+// ===================== FINAL =====================
+function showFinal(){
+  document.getElementById('finalMsg').textContent=finalMessage;
+  launchConfetti(30);spawnMassHearts();
+}
+
+// ===================== EFFECTS =====================
+function initBgParticles(){
+  const wrap=document.getElementById('bgParticles');if(wrap.children.length>0)return;
+  const emojis=['✨','🌸','💕','⭐','🌟','💫','🩷'];
+  for(let i=0;i<20;i++){
+    const p=document.createElement('span');p.className='particle';
+    p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    p.style.left=Math.random()*100+'%';p.style.animationDuration=(8+Math.random()*12)+'s';
+    p.style.animationDelay=(-Math.random()*15)+'s';p.style.fontSize=(12+Math.random()*16)+'px';
+    wrap.appendChild(p);
+  }
+}
+function initFallingHearts(){
+  const wrap=document.getElementById('fallingHearts');if(wrap.children.length>0)return;
+  const hearts=['💗','💖','💕','🩷','❤️','💓'];
+  for(let i=0;i<15;i++){
+    const h=document.createElement('span');h.className='falling-heart';
+    h.textContent=hearts[Math.floor(Math.random()*hearts.length)];
+    h.style.left=Math.random()*100+'%';h.style.fontSize=(10+Math.random()*20)+'px';
+    h.style.animationDuration=(8+Math.random()*15)+'s';h.style.animationDelay=(-Math.random()*15)+'s';
+    wrap.appendChild(h);
+  }
+}
+function launchConfetti(n=40){
+  const colors=['#ff85a1','#c39bd3','#ffd6e0','#f5c842','#b5ead7','#ff4d79'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');c.className='confetti-piece';
+    c.style.left=Math.random()*100+'vw';c.style.top='-20px';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.width=(6+Math.random()*8)+'px';c.style.height=(6+Math.random()*8)+'px';
+    c.style.animationDuration=(1.5+Math.random()*2)+'s';c.style.animationDelay=Math.random()*.5+'s';
+    c.style.borderRadius=Math.random()>.5?'50%':'2px';
+    document.body.appendChild(c);setTimeout(()=>c.remove(),3000);
+  }
+}
+function spawnSparkles(el){
+  const rect=el.getBoundingClientRect();
+  for(let i=0;i<8;i++){
+    const s=document.createElement('div');s.className='sparkle';
+    const angle=(i/8)*Math.PI*2,dist=30+Math.random()*40;
+    s.style.left=(rect.left+rect.width/2)+'px';s.style.top=(rect.top+rect.height/2)+'px';
+    s.style.setProperty('--tx',Math.cos(angle)*dist+'px');s.style.setProperty('--ty',Math.sin(angle)*dist+'px');
+    s.style.background=['#f5c842','#ff85a1','#c39bd3'][Math.floor(Math.random()*3)];
+    document.body.appendChild(s);setTimeout(()=>s.remove(),700);
+  }
+}
+function spawnMassHearts(){
+  const hearts=['💗','💖','💕','💝','🌸','✨'];
+  for(let i=0;i<20;i++){
+    setTimeout(()=>{
+      const h=document.createElement('span');
+      h.style.cssText=`position:fixed;font-size:${16+Math.random()*24}px;left:${Math.random()*100}vw;top:100vh;z-index:998;pointer-events:none;animation:floatUp ${4+Math.random()*4}s linear forwards;`;
+      h.textContent=hearts[Math.floor(Math.random()*hearts.length)];
+      document.body.appendChild(h);setTimeout(()=>h.remove(),8000);
+    },i*200);
+  }
+}
+
+// Click sparkles
+document.addEventListener('click',(e)=>{
+  if(e.target.closest('#creator-screen,#gf-entry-screen'))return;
+  for(let i=0;i<5;i++){
+    const s=document.createElement('div');s.className='sparkle';
+    const angle=(i/5)*Math.PI*2,dist=20+Math.random()*30;
+    s.style.left=e.clientX+'px';s.style.top=e.clientY+'px';
+    s.style.setProperty('--tx',Math.cos(angle)*dist+'px');s.style.setProperty('--ty',Math.sin(angle)*dist+'px');
+    s.style.background=['#f5c842','#ff85a1','#c39bd3','#ffd6e0'][Math.floor(Math.random()*4)];
+    document.body.appendChild(s);setTimeout(()=>s.remove(),700);
+  }
+});
+
+// ===================== MUSIC (Web Audio - romantic melody) =====================
+let audioCtx,musicPlaying=false,musicInterval,melodyIdx=0;
+
+// Romantic waltz-style melody with longer notes for softness
+const melody=[
+  261.63,0,329.63,0,392,0,329.63,0,
+  293.66,0,349.23,0,440,0,349.23,0,
+  329.63,0,392,0,493.88,0,392,0,
+  261.63,0,0,0,0,0,0,0,
+  293.66,0,369.99,0,440,0,369.99,0,
+  261.63,0,329.63,0,415.30,0,329.63,0,
+  246.94,0,311.13,0,392,0,311.13,0,
+  261.63,0,0,0,0,0,0,0
+];
+
+// Harmony layer (lower octave for richness)
+const harmony=[
+  130.81,0,164.81,0,196,0,164.81,0,
+  146.83,0,174.61,0,220,0,174.61,0,
+  164.81,0,196,0,246.94,0,196,0,
+  130.81,0,0,0,0,0,0,0,
+  146.83,0,184.99,0,220,0,184.99,0,
+  130.81,0,164.81,0,207.65,0,164.81,0,
+  123.47,0,155.56,0,196,0,155.56,0,
+  130.81,0,0,0,0,0,0,0
+];
+
+let harmonyIdx=0;
+
+function playNote(freq,vol=0.12,dur=0.5){
+  if(!audioCtx||freq===0)return;
+  const osc=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  // Soft sine wave through a gentle lowpass
+  const filter=audioCtx.createBiquadFilter();
+  filter.type='lowpass';filter.frequency.setValueAtTime(800,audioCtx.currentTime);
+  osc.connect(filter);filter.connect(g);g.connect(audioCtx.destination);
+  osc.type='sine';
+  osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
+  g.gain.setValueAtTime(0,audioCtx.currentTime);
+  g.gain.linearRampToValueAtTime(vol,audioCtx.currentTime+0.05);
+  g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+dur);
+  osc.start(audioCtx.currentTime);osc.stop(audioCtx.currentTime+dur);
+}
+
+function startMusic(){
+  try{
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    musicPlaying=true;
+    document.getElementById('musicToggle').classList.add('playing');
+    musicInterval=setInterval(()=>{
+      if(!musicPlaying)return;
+      playNote(melody[melodyIdx%melody.length],0.10,0.55);
+      playNote(harmony[harmonyIdx%harmony.length],0.06,0.55);
+      melodyIdx++;harmonyIdx++;
+    },280);
+  }catch(e){}
+}
+
+document.getElementById('musicToggle').onclick=()=>{
+  if(!audioCtx){startMusic();return;}
+  musicPlaying=!musicPlaying;
+  const btn=document.getElementById('musicToggle');
+  btn.classList.toggle('playing',musicPlaying);
+  btn.textContent=musicPlaying?'🎵':'🔇';
+};
+
+// Init
+updateDots();
+</script>
+</body>
+</html>
