@@ -72,7 +72,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#ffeef4 0
 .reveal-close{margin-top:20px;background:linear-gradient(135deg,var(--pink),var(--rose));color:white;border:none;padding:12px 30px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:1rem;cursor:pointer;box-shadow:0 5px 15px rgba(255,77,121,.3);transition:transform .2s;}
 .reveal-close:hover{transform:scale(1.05);}
 
-/* FORGIVENESS METER */
+/* ===== FORGIVENESS METER ===== */
 #sec-meter{background:transparent;}
 .meter-card{background:white;border-radius:30px;padding:35px 25px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(255,133,161,.25);border:2px solid rgba(255,133,161,.2);position:relative;overflow:hidden;}
 .meter-card-label{font-size:.7rem;letter-spacing:3px;color:var(--soft);text-transform:uppercase;margin-bottom:10px;}
@@ -89,6 +89,7 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#ffeef4 0
 .meter-love-btn{background:linear-gradient(135deg,#8b1a3a,#c0304f);color:white;border:none;padding:14px 40px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;letter-spacing:1px;box-shadow:0 6px 20px rgba(139,26,58,.4);transition:transform .2s;display:none;width:100%;}
 .meter-love-btn:hover{transform:scale(1.03);}
 .meter-system{font-size:.7rem;color:var(--soft);margin-top:15px;display:none;}
+/* explosion */
 .meter-explode{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:0;}
 .meter-explode.boom{animation:boom .8s ease forwards;}
 @keyframes boom{0%{opacity:0;transform:scale(0)}30%{opacity:1;transform:scale(1.5)}60%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(2)}}
@@ -137,70 +138,50 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#ffeef4 0
 .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,133,161,.3);transition:all .3s;}
 .dot.active{background:var(--rose);transform:scale(1.3);}
 
-/* ========= CREATOR MODE (guy's review screen) ========= */
-#creator-screen{position:fixed;inset:0;z-index:9000;background:linear-gradient(160deg,#1a0a2e 0%,#2d1b4e 50%,#1a1040 100%);overflow-y:auto;display:none;}
-#creator-screen.open{display:block;}
+/* ===== PREVIEW SCREEN (full experience, free) ===== */
+#preview-screen{position:fixed;inset:0;z-index:5000;background:linear-gradient(135deg,#ffeef4,#e8d5f5,#ffd6e0);overflow-y:auto;display:none;}
+#preview-screen.open{display:block;}
+.preview-topbar{position:sticky;top:0;z-index:10;background:rgba(255,238,244,.95);backdrop-filter:blur(10px);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,133,161,.2);}
+.preview-topbar-title{font-family:'Dancing Script',cursive;font-size:1.2rem;color:var(--text);}
+.preview-badge{background:rgba(255,133,161,.15);color:var(--rose);font-size:.7rem;padding:4px 10px;border-radius:20px;font-weight:600;letter-spacing:1px;}
+.preview-close-btn{background:none;border:1px solid rgba(255,133,161,.4);color:var(--rose);padding:6px 14px;border-radius:20px;cursor:pointer;font-size:.8rem;font-family:'Nunito',sans-serif;}
 
-.cr-topbar{position:sticky;top:0;z-index:10;background:rgba(26,10,46,.97);backdrop-filter:blur(10px);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,133,161,.2);}
-.cr-topbar-title{font-family:'Dancing Script',cursive;font-size:1.3rem;color:#ff85a1;}
-.cr-badge{background:rgba(245,200,66,.15);color:#f5c842;font-size:.7rem;padding:4px 10px;border-radius:20px;font-weight:700;letter-spacing:1px;}
+/* ===== PAYWALL (shown after preview) ===== */
+#paywall{position:fixed;inset:0;z-index:4000;background:linear-gradient(160deg,#1a0a2e 0%,#2d1b4e 50%,#1a1040 100%);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:0 20px 40px;overflow-y:auto;}
+#paywall.open{display:flex;}
+.pw-hero{text-align:center;padding:40px 0 25px;}
+.pw-emoji{font-size:70px;animation:bounce 1.2s ease infinite;display:block;margin-bottom:15px;}
+.pw-title{font-family:'Dancing Script',cursive;font-size:clamp(1.8rem,6vw,3rem);color:#ff85a1;margin-bottom:8px;}
+.pw-sub{color:#c39bd3;font-size:.9rem;line-height:1.6;max-width:320px;margin:0 auto;}
+.pw-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,133,161,.25);border-radius:24px;padding:22px;max-width:360px;width:100%;margin-bottom:18px;}
+.pw-card-title{color:#ff85a1;font-family:'Dancing Script',cursive;font-size:1.1rem;margin-bottom:12px;}
+.pw-feature{display:flex;align-items:flex-start;gap:10px;color:#e8d5f5;font-size:.84rem;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.pw-feature:last-child{border:none;}
+.pw-feature-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
 
-.cr-hero{text-align:center;padding:50px 20px 30px;}
-.cr-hero-emoji{font-size:70px;display:block;animation:bounce 1.2s ease infinite;margin-bottom:16px;}
-.cr-hero-title{font-family:'Dancing Script',cursive;font-size:clamp(2rem,7vw,3.5rem);color:#ff85a1;margin-bottom:10px;}
-.cr-hero-sub{color:#c39bd3;font-size:.95rem;line-height:1.7;max-width:340px;margin:0 auto;}
+/* DISCOUNT SECTION */
+.pw-discount-wrap{max-width:360px;width:100%;margin-bottom:18px;}
+.pw-discount-row{display:flex;gap:8px;}
+.pw-discount-input{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(195,155,211,.3);border-radius:12px;padding:12px 15px;color:#e8d5f5;font-family:'Nunito',sans-serif;font-size:.9rem;outline:none;}
+.pw-discount-input::placeholder{color:rgba(195,155,211,.5);}
+.pw-discount-input:focus{border-color:#ff85a1;}
+.pw-discount-apply{background:rgba(255,133,161,.2);border:1px solid rgba(255,133,161,.4);color:#ff85a1;padding:12px 18px;border-radius:12px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;white-space:nowrap;transition:all .2s;}
+.pw-discount-apply:hover{background:rgba(255,133,161,.3);}
+.pw-discount-msg{font-size:.8rem;margin-top:8px;min-height:20px;text-align:center;font-style:italic;}
+.pw-discount-msg.success{color:#7ae7b3;}
+.pw-discount-msg.error{color:#ff7a7a;}
 
-/* Preview sections in creator mode */
-.cr-section-preview{max-width:440px;margin:0 auto 30px;background:rgba(255,255,255,.05);border:1px solid rgba(255,133,161,.2);border-radius:24px;padding:24px;transition:transform .2s;}
-.cr-section-preview:hover{transform:translateY(-3px);}
-.cr-section-label{color:#ff85a1;font-family:'Dancing Script',cursive;font-size:1.2rem;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.cr-section-label span{font-size:1.4rem;}
-.cr-section-desc{color:#c39bd3;font-size:.83rem;line-height:1.6;}
-.cr-mini-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
-.cr-mini-card{aspect-ratio:1;background:rgba(255,238,244,.07);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:1px solid rgba(255,133,161,.15);}
-.cr-mini-balloons{display:flex;gap:8px;margin-top:12px;justify-content:center;}
-.cr-mini-balloon{width:30px;height:36px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;display:flex;align-items:center;justify-content:center;font-size:.8rem;}
-.cr-meter-mini{margin-top:12px;background:rgba(255,238,244,.05);border-radius:14px;padding:14px;text-align:center;}
-.cr-meter-num{font-family:'Playfair Display',serif;font-size:2.5rem;color:#ff4d79;font-weight:700;}
-.cr-meter-bar{height:8px;background:rgba(255,255,255,.1);border-radius:50px;overflow:hidden;margin:8px 0;}
-.cr-meter-bar-fill{height:100%;width:100%;background:linear-gradient(90deg,#ff4d79,#f5c842);border-radius:50px;}
+/* PRICE */
+.pw-price-box{max-width:360px;width:100%;background:rgba(255,133,161,.08);border:1px solid rgba(255,133,161,.2);border-radius:18px;padding:18px 22px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;}
+.pw-price-label{color:#c39bd3;font-size:.85rem;}
+.pw-price-right{text-align:right;}
+.pw-price-original{color:rgba(195,155,211,.5);font-size:.8rem;text-decoration:line-through;display:none;}
+.pw-price-amount{font-family:'Dancing Script',cursive;font-size:2rem;color:#ff85a1;font-weight:700;line-height:1;}
+.pw-price-saved{font-size:.7rem;color:#7ae7b3;display:none;}
 
-/* Divider */
-.cr-divider{max-width:440px;margin:0 auto 30px;text-align:center;color:rgba(195,155,211,.4);font-size:.8rem;letter-spacing:3px;}
-
-/* Discount section */
-.cr-discount-box{max-width:440px;margin:0 auto 24px;background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.25);border-radius:20px;padding:22px;}
-.cr-discount-title{color:#f5c842;font-family:'Dancing Script',cursive;font-size:1.2rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.cr-codes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.cr-code-chip{background:rgba(255,133,161,.1);border:1px solid rgba(255,133,161,.25);border-radius:10px;padding:10px 12px;}
-.cr-code-chip .code{font-family:monospace;font-size:.95rem;color:#ff85a1;font-weight:700;letter-spacing:1px;}
-.cr-code-chip .code-desc{font-size:.72rem;color:#c39bd3;margin-top:3px;}
-.cr-discount-row{display:flex;gap:8px;}
-.cr-discount-input{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(195,155,211,.3);border-radius:12px;padding:12px 15px;color:#e8d5f5;font-family:'Nunito',sans-serif;font-size:.9rem;outline:none;}
-.cr-discount-input::placeholder{color:rgba(195,155,211,.4);}
-.cr-discount-input:focus{border-color:#ff85a1;}
-.cr-discount-apply{background:rgba(255,133,161,.2);border:1px solid rgba(255,133,161,.4);color:#ff85a1;padding:12px 18px;border-radius:12px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;white-space:nowrap;}
-.cr-discount-apply:hover{background:rgba(255,133,161,.35);}
-.cr-discount-msg{font-size:.8rem;margin-top:8px;min-height:20px;text-align:center;font-style:italic;}
-.cr-discount-msg.success{color:#7ae7b3;}
-.cr-discount-msg.error{color:#ff7a7a;}
-
-/* Price box */
-.cr-price-box{max-width:440px;margin:0 auto 20px;background:rgba(255,133,161,.08);border:1px solid rgba(255,133,161,.2);border-radius:18px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;}
-.cr-price-label{color:#c39bd3;font-size:.85rem;line-height:1.6;}
-.cr-price-right{text-align:right;}
-.cr-price-original{color:rgba(195,155,211,.4);font-size:.8rem;text-decoration:line-through;display:none;}
-.cr-price-amount{font-family:'Dancing Script',cursive;font-size:2.2rem;color:#ff85a1;font-weight:700;line-height:1;}
-.cr-price-saved{font-size:.72rem;color:#7ae7b3;display:none;margin-top:3px;}
-
-.cr-pay-btn{display:block;width:min(440px,calc(100% - 40px));margin:0 auto 14px;background:linear-gradient(135deg,#ff85a1,#ff4d79);color:white;border:none;padding:18px 50px;border-radius:50px;font-family:'Dancing Script',cursive;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 30px rgba(255,77,121,.4);transition:transform .2s,box-shadow .2s;}
-.cr-pay-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 40px rgba(255,77,121,.55);}
-.cr-secure{color:rgba(195,155,211,.45);font-size:.72rem;text-align:center;margin-bottom:60px;}
-
-/* ========= GIRLFRIEND ENTRY SCREEN ========= */
-#gf-entry-screen{position:fixed;inset:0;z-index:6000;background:linear-gradient(135deg,#ffeef4,#e8d5f5,#ffd6e0);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;}
-
-@keyframes cardShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-2deg)}40%{transform:translateX(8px) rotate(2deg)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.pw-pay-btn{background:linear-gradient(135deg,#ff85a1,#ff4d79);color:white;border:none;padding:16px 50px;border-radius:50px;font-family:'Dancing Script',cursive;font-size:1.3rem;cursor:pointer;box-shadow:0 8px 30px rgba(255,77,121,.4);transition:transform .2s,box-shadow .2s;width:min(360px,100%);margin-bottom:10px;}
+.pw-pay-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 40px rgba(255,77,121,.5);}
+.pw-secure{color:rgba(195,155,211,.5);font-size:.72rem;margin-top:12px;text-align:center;}
 </style>
 </head>
 <body>
@@ -210,125 +191,77 @@ body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#ffeef4 0
 <div class="music-note" id="musicToggle">🎵</div>
 <div class="progress-dots" id="progressDots"></div>
 
-<!-- ======== GIRLFRIEND ENTRY (shown by default / when no creator mode) ======== -->
-<div id="gf-entry-screen">
-  <div style="font-size:80px;animation:bounce 1s infinite;margin-bottom:20px;">💌</div>
-  <div style="font-family:'Dancing Script',cursive;font-size:clamp(1.8rem,6vw,3rem);color:var(--text);margin-bottom:12px;">A Little Note For You</div>
-  <div style="font-size:.9rem;color:var(--soft);margin-bottom:40px;line-height:1.6;max-width:300px;">Someone made something special just for you. Are you ready? ✨</div>
-  <button onclick="startGfJourney()" style="background:linear-gradient(135deg,var(--pink),var(--rose));color:white;border:none;padding:16px 50px;border-radius:50px;font-family:'Dancing Script',cursive;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 30px rgba(255,77,121,.4);margin-bottom:12px;">
-    💗 Open your surprise
-  </button>
-  <div style="font-size:.75rem;color:var(--soft);">Made with love, just for you 🌸</div>
+<!-- ======== PREVIEW SCREEN (full walkthrough, free) ======== -->
+<div id="preview-screen">
+  <div class="preview-topbar">
+    <span class="preview-topbar-title">✨ Preview Mode</span>
+    <span class="preview-badge">FREE PREVIEW</span>
+    <button class="preview-close-btn" onclick="exitPreview()">✕ Exit</button>
+  </div>
+  <!-- The actual experience sections rendered here too -->
+  <div id="preview-body" style="padding:0 0 100px;">
+    <!-- dynamically mirrors the main experience sections for preview -->
+  </div>
+  <!-- sticky bottom CTA -->
+  <div style="position:fixed;bottom:0;left:0;right:0;z-index:100;background:linear-gradient(to top,rgba(255,238,244,.98),transparent);padding:20px;text-align:center;">
+    <button onclick="exitPreview();openPaywall();" style="background:linear-gradient(135deg,#ff85a1,#ff4d79);color:white;border:none;padding:14px 40px;border-radius:50px;font-family:'Dancing Script',cursive;font-size:1.2rem;cursor:pointer;box-shadow:0 8px 25px rgba(255,77,121,.4);width:min(320px,90%);">
+      💝 Loved it? Unlock Now
+    </button>
+    <div style="font-size:.75rem;color:var(--soft);margin-top:8px;">See pricing after this 💸</div>
+  </div>
 </div>
 
-<!-- ======== CREATOR SCREEN (guy's review & payment mode) ======== -->
-<div id="creator-screen">
-  <div class="cr-topbar">
-    <span class="cr-topbar-title">✨ Creator Review</span>
-    <span class="cr-badge">🔐 YOUR VIEW ONLY</span>
+<!-- ======== PAYWALL ======== -->
+<div id="paywall">
+  <div class="pw-hero">
+    <span class="pw-emoji">💝</span>
+    <div class="pw-title">Unlock This Love Letter</div>
+    <div class="pw-sub">You've seen the magic ✨<br>Now send it to the person who deserves it most</div>
   </div>
 
-  <div class="cr-hero">
-    <span class="cr-hero-emoji">💝</span>
-    <div class="cr-hero-title">Your Apology Website</div>
-    <div class="cr-hero-sub">Review exactly what she'll see ✨<br>Then unlock &amp; send with one tap 💕</div>
+  <div class="pw-card">
+    <div class="pw-card-title">✨ What You Just Previewed</div>
+    <div class="pw-feature"><span class="pw-feature-icon">🌸</span> Dreamy loading screen + cuteness meter</div>
+    <div class="pw-feature"><span class="pw-feature-icon">💖</span> 6 tappable heart-reveal cards</div>
+    <div class="pw-feature"><span class="pw-feature-icon">🎈</span> 5 poppable pastel balloons</div>
+    <div class="pw-feature"><span class="pw-feature-icon">💔➡️💕</span> Forgiveness Meter that explodes with love</div>
+    <div class="pw-feature"><span class="pw-feature-icon">🐱</span> Kawaii character + typewriter note</div>
+    <div class="pw-feature"><span class="pw-feature-icon">🎵</span> Romantic music-box background</div>
+    <div class="pw-feature"><span class="pw-feature-icon">💌</span> Glowing custom final message card</div>
   </div>
 
-  <!-- Section 1 preview -->
-  <div class="cr-section-preview">
-    <div class="cr-section-label"><span>💗</span> Section 1 — Heart Cards</div>
-    <div class="cr-section-desc">She taps each heart card to reveal a personal love message. All 6 must be opened before she can continue.</div>
-    <div class="cr-mini-cards">
-      <div class="cr-mini-card">💗</div><div class="cr-mini-card">💖</div><div class="cr-mini-card">💝</div>
-      <div class="cr-mini-card">🩷</div><div class="cr-mini-card">💓</div><div class="cr-mini-card">🫀</div>
+  <!-- DISCOUNT CODE -->
+  <div class="pw-discount-wrap">
+    <div style="color:#c39bd3;font-size:.82rem;margin-bottom:8px;text-align:center;">🏷️ Have a discount code?</div>
+    <div class="pw-discount-row">
+      <input class="pw-discount-input" id="discountInput" placeholder="Enter code e.g. SORRY50" maxlength="20">
+      <button class="pw-discount-apply" onclick="applyDiscount()">Apply</button>
+    </div>
+    <div class="pw-discount-msg" id="discountMsg"></div>
+  </div>
+
+  <div class="pw-price-box">
+    <div class="pw-price-label">One-time unlock<br><span style="font-size:.72rem;opacity:.6;">Instant access · Share link</span></div>
+    <div class="pw-price-right">
+      <div class="pw-price-original" id="originalPrice">₹149</div>
+      <div class="pw-price-amount" id="displayPrice">₹149</div>
+      <div class="pw-price-saved" id="savedLabel"></div>
     </div>
   </div>
 
-  <!-- Section 2 preview -->
-  <div class="cr-section-preview">
-    <div class="cr-section-label"><span>🎈</span> Section 2 — Pop the Balloons</div>
-    <div class="cr-section-desc">5 floating pastel balloons, each hiding a secret message when she pops them.</div>
-    <div class="cr-mini-balloons">
-      <div class="cr-mini-balloon" style="background:#ffb3c1;">🌸</div>
-      <div class="cr-mini-balloon" style="background:#c3b1e1;">🌙</div>
-      <div class="cr-mini-balloon" style="background:#b5ead7;">⭐</div>
-      <div class="cr-mini-balloon" style="background:#ffd6a5;">🦋</div>
-      <div class="cr-mini-balloon" style="background:#ffc8dd;">🌈</div>
-    </div>
-  </div>
+  <button class="pw-pay-btn" id="payBtn" onclick="startRazorpay()">💳 Unlock for ₹149</button>
+  <div class="pw-secure">🔒 Secured by Razorpay · Instant unlock after payment</div>
+</div>
 
-  <!-- Section 3 preview -->
-  <div class="cr-section-preview">
-    <div class="cr-section-label"><span>💔</span> Section 3 — Forgiveness Meter™</div>
-    <div class="cr-section-desc">An AI-themed meter counts up, breaks, and declares her officially too cute for the universe.</div>
-    <div class="cr-meter-mini">
-      <div class="cr-meter-num">∞%</div>
-      <div class="cr-meter-bar"><div class="cr-meter-bar-fill"></div></div>
-      <div style="font-size:.7rem;color:#ff85a1;font-weight:600;">💔 CUTENESS METER OFFICIALLY BROKEN</div>
-    </div>
-  </div>
-
-  <!-- Section 4 preview -->
-  <div class="cr-section-preview">
-    <div class="cr-section-label"><span>🐱</span> Section 4 — Typewriter Love Note</div>
-    <div class="cr-section-desc">A kawaii cat delivers your heartfelt apology letter one character at a time with a blinking cursor.</div>
-    <div style="margin-top:12px;background:rgba(255,238,244,.07);border-radius:12px;padding:12px;font-family:'Playfair Display',serif;font-size:.82rem;color:#c39bd3;font-style:italic;line-height:1.7;">
-      "I know sorry isn't always enough... but I mean every single letter of it..."
-    </div>
-  </div>
-
-  <!-- Section 5 preview -->
-  <div class="cr-section-preview">
-    <div class="cr-section-label"><span>💌</span> Section 5 — Final Message Card</div>
-    <div class="cr-section-desc">A glowing, animated card with your personal message — the emotional climax of the whole experience.</div>
-    <div style="margin-top:12px;text-align:center;font-size:2.5rem;">🤗</div>
-    <div style="text-align:center;font-family:'Dancing Script',cursive;font-size:.9rem;color:#ff85a1;margin-top:6px;">"Your personal words glow here forever ✨"</div>
-  </div>
-
-  <!-- Bonus features preview -->
-  <div class="cr-section-preview">
-    <div class="cr-section-label"><span>✨</span> Plus All These Extras</div>
-    <div class="cr-section-desc" style="line-height:2;">
-      🎵 Soft romantic music-box melody<br>
-      🌸 Floating particles &amp; falling hearts<br>
-      ✨ Sparkle cursor &amp; confetti bursts<br>
-      📱 Fully mobile-responsive<br>
-      💕 Progress dots navigation
-    </div>
-  </div>
-
-  <div class="cr-divider">✦ ✦ ✦ UNLOCK &amp; SEND ✦ ✦ ✦</div>
-
-  <!-- Discount codes (only visible here in creator mode) -->
-  <div class="cr-discount-box">
-    <div class="cr-discount-title"><span>🏷️</span> Your Secret Discount Codes</div>
-    <div class="cr-codes-grid">
-      <div class="cr-code-chip"><div class="code">SORRY50</div><div class="code-desc">50% off 🥺</div></div>
-      <div class="cr-code-chip"><div class="code">LOVE99</div><div class="code-desc">99% off 💕</div></div>
-      <div class="cr-code-chip"><div class="code">FORGIVE</div><div class="code-desc">30% off ✨</div></div>
-      <div class="cr-code-chip"><div class="code">HEART25</div><div class="code-desc">25% off 💗</div></div>
-      <div class="cr-code-chip"><div class="code">MYLOVE</div><div class="code-desc">40% off 🌸</div></div>
-      <div class="cr-code-chip"><div class="code">SORRY10</div><div class="code-desc">10% off 💌</div></div>
-    </div>
-    <div style="color:#c39bd3;font-size:.8rem;margin-bottom:10px;text-align:center;">Apply a code below before paying:</div>
-    <div class="cr-discount-row">
-      <input class="cr-discount-input" id="crDiscountInput" placeholder="e.g. SORRY50" maxlength="20">
-      <button class="cr-discount-apply" onclick="crApplyDiscount()">Apply</button>
-    </div>
-    <div class="cr-discount-msg" id="crDiscountMsg"></div>
-  </div>
-
-  <div class="cr-price-box">
-    <div class="cr-price-label">One-time unlock<br><span style="font-size:.72rem;opacity:.6;">Instant · Your link works forever</span></div>
-    <div class="cr-price-right">
-      <div class="cr-price-original" id="crOriginalPrice">₹149</div>
-      <div class="cr-price-amount" id="crDisplayPrice">₹149</div>
-      <div class="cr-price-saved" id="crSavedLabel"></div>
-    </div>
-  </div>
-
-  <button class="cr-pay-btn" id="crPayBtn" onclick="crStartRazorpay()">💳 Unlock &amp; Send for ₹149</button>
-  <div class="cr-secure">🔒 Secured by Razorpay · Share the link after payment, she sees the full experience</div>
+<!-- ======== ENTRY SCREEN ======== -->
+<div id="entry-screen" style="position:fixed;inset:0;z-index:6000;background:linear-gradient(135deg,#ffeef4,#e8d5f5,#ffd6e0);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;">
+  <div style="font-size:80px;animation:bounce 1s infinite;margin-bottom:20px;">💌</div>
+  <div style="font-family:'Dancing Script',cursive;font-size:clamp(1.8rem,6vw,3rem);color:var(--text);margin-bottom:12px;">A Little Note For You</div>
+  <div style="font-size:.9rem;color:var(--soft);margin-bottom:40px;line-height:1.6;max-width:300px;">Someone made something special just for you. Would you like to see it? ✨</div>
+  <button onclick="startPreviewJourney()" style="background:linear-gradient(135deg,var(--pink),var(--rose));color:white;border:none;padding:16px 50px;border-radius:50px;font-family:'Dancing Script',cursive;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 30px rgba(255,77,121,.4);margin-bottom:12px;">
+    👀 Preview for Free
+  </button>
+  <div style="font-size:.75rem;color:var(--soft);">Full preview — no payment until you decide</div>
 </div>
 
 <!-- ======== LOADING SCREEN ======== -->
@@ -431,39 +364,43 @@ const balloonMessages=[
 const typewriterContent=`I know sorry isn't always enough... but I mean every single letter of it. I never wanted to hurt you, and I'd take back every word that made you cry. You are so, so precious to me — more than I probably show. I see your kindness, your patience, your heart. And I know I don't deserve it right now. But I'm asking anyway, hoping you'll let me try again — to be better, to be kinder, to be everything you deserve.\n\nWith all my love and more 🌸`;
 const finalMessage=`[PASTE MY MESSAGE HERE]\n\nReplace this with your heartfelt custom message. Something personal, vulnerable, and from the soul. This is where your words glow the brightest. ✨💌`;
 
-// ===================== DISCOUNT CODES (creator-only, hidden from GF) =====================
+// ===================== DISCOUNT CODES =====================
 const DISCOUNT_CODES={
   "SORRY50":{pct:50,label:"50% off — because you said sorry first 🥺"},
   "LOVE99":{pct:99,label:"99% off — love is almost free 💕"},
   "FORGIVE":{pct:30,label:"30% off — forgiveness discount ✨"},
   "HEART25":{pct:25,label:"25% off — heart discount 💗"},
-  "MYLOVE":{pct:40,label:"40% off — for my love 🌸"},
-  "SORRY10":{pct:10,label:"10% off — sweet little sorry 💌"}
+  "MYLOVE":{pct:40,label:"40% off — for my love 🌸"}
 };
 const BASE_PRICE=149;
-let crCurrentPrice=BASE_PRICE;
-let crAppliedDiscount=null;
+let currentPrice=BASE_PRICE;
+let appliedDiscount=null;
 
-function crApplyDiscount(){
-  const code=document.getElementById('crDiscountInput').value.trim().toUpperCase();
-  const msg=document.getElementById('crDiscountMsg');
+function applyDiscount(){
+  const code=document.getElementById('discountInput').value.trim().toUpperCase();
+  const msg=document.getElementById('discountMsg');
   const disc=DISCOUNT_CODES[code];
-  if(!disc){msg.textContent="❌ Invalid code. Try again!";msg.className='cr-discount-msg error';return;}
-  crAppliedDiscount=disc;
-  crCurrentPrice=Math.round(BASE_PRICE*(1-disc.pct/100));
-  msg.textContent="✅ "+disc.label;msg.className='cr-discount-msg success';
-  document.getElementById('crOriginalPrice').style.display='block';
-  document.getElementById('crOriginalPrice').textContent='₹'+BASE_PRICE;
-  document.getElementById('crDisplayPrice').textContent='₹'+crCurrentPrice;
-  document.getElementById('crSavedLabel').style.display='block';
-  document.getElementById('crSavedLabel').textContent='You saved ₹'+(BASE_PRICE-crCurrentPrice)+'! 🎉';
-  document.getElementById('crPayBtn').textContent='💳 Unlock & Send for ₹'+crCurrentPrice;
+  if(!disc){
+    msg.textContent="❌ Invalid code. Try again!";
+    msg.className='pw-discount-msg error';
+    return;
+  }
+  appliedDiscount=disc;
+  currentPrice=Math.round(BASE_PRICE*(1-disc.pct/100));
+  msg.textContent="✅ "+disc.label;
+  msg.className='pw-discount-msg success';
+  document.getElementById('originalPrice').style.display='block';
+  document.getElementById('originalPrice').textContent='₹'+BASE_PRICE;
+  document.getElementById('displayPrice').textContent='₹'+currentPrice;
+  document.getElementById('savedLabel').style.display='block';
+  document.getElementById('savedLabel').textContent='You saved ₹'+(BASE_PRICE-currentPrice)+'!';
+  document.getElementById('payBtn').textContent='💳 Unlock for ₹'+currentPrice;
   launchConfetti(15);
 }
 
 // ===================== RAZORPAY =====================
-function crStartRazorpay(){
-  const amount=crCurrentPrice*100;
+function startRazorpay(){
+  const amount=currentPrice*100;
   const options={
     key:"rzp_test_XXXXXXXXXX", // ← Replace with your Razorpay Key ID
     amount:amount,
@@ -471,11 +408,12 @@ function crStartRazorpay(){
     name:"A Little Note For You",
     description:"Unlock your romantic apology website 💝",
     handler:function(response){
-      document.getElementById('creator-screen').style.display='none';
-      crUnlockAndStart();
+      document.getElementById('paywall').classList.remove('open');
+      document.getElementById('paywall').style.display='none';
+      unlockAndStart();
     },
     prefill:{name:"",email:"",contact:""},
-    notes:{purpose:"apology_website",discount:crAppliedDiscount?document.getElementById('crDiscountInput').value:"none"},
+    notes:{purpose:"apology_website",discount:appliedDiscount?document.getElementById('discountInput').value:"none"},
     theme:{color:"#ff4d79"},
     modal:{ondismiss:function(){console.log('cancelled');}}
   };
@@ -484,34 +422,87 @@ function crStartRazorpay(){
     rzp.on('payment.failed',function(){alert('Payment failed. Please try again 💔');});
     rzp.open();
   }catch(e){
-    // Dev fallback — remove in production
-    document.getElementById('creator-screen').style.display='none';
-    crUnlockAndStart();
+    // Dev fallback
+    document.getElementById('paywall').classList.remove('open');
+    document.getElementById('paywall').style.display='none';
+    unlockAndStart();
   }
 }
 
-function crUnlockAndStart(){
-  startLoading();
+// ===================== FLOW =====================
+function startPreviewJourney(){
+  document.getElementById('entry-screen').style.display='none';
+  initBgParticles();
+  initFallingHearts();
+  // Show preview screen with the actual sections embedded
+  buildPreviewContent();
+  document.getElementById('preview-screen').classList.add('open');
 }
 
-// ===================== MODE DETECTION =====================
-function detectMode(){
-  const params=new URLSearchParams(window.location.search);
-  const isCreator=params.get('mode')==='creator'||params.get('creator')==='1'||params.get('preview')==='1';
-  if(isCreator){
-    // Guy's review mode
-    document.getElementById('gf-entry-screen').style.display='none';
-    document.getElementById('creator-screen').classList.add('open');
-    initBgParticles();initFallingHearts();
-  }
-  // else: default = girlfriend sees entry screen
-}
-detectMode();
+function buildPreviewContent(){
+  // We run the actual experience inside the preview screen by just showing main sections there
+  // Actually simpler: just show a scrollable mock of each section
+  const body=document.getElementById('preview-body');
+  body.innerHTML=`
+  <div style="padding:30px 20px;text-align:center;">
+    <div style="font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--text);margin-bottom:6px;">Loading Screen</div>
+    <div style="background:white;border-radius:20px;padding:25px;max-width:340px;margin:0 auto 20px;box-shadow:0 8px 25px rgba(255,133,161,.15);">
+      <div style="font-size:50px;margin-bottom:10px;">💖</div>
+      <div style="font-family:'Dancing Script',cursive;font-size:1.2rem;color:var(--text);margin-bottom:15px;">Measuring your cuteness... ✨</div>
+      <div style="background:#f5e6ee;border-radius:50px;height:10px;overflow:hidden;"><div style="height:100%;width:100%;background:linear-gradient(90deg,#ff85a1,#c39bd3,#ff4d79);border-radius:50px;"></div></div>
+      <div style="font-family:'Dancing Script',cursive;font-size:2rem;color:var(--rose);margin-top:10px;">100%</div>
+    </div>
 
-// ===================== GF JOURNEY =====================
-function startGfJourney(){
-  document.getElementById('gf-entry-screen').style.display='none';
-  initBgParticles();initFallingHearts();
+    <div style="font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--text);margin-bottom:6px;">💗 Heart Cards</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:320px;margin:0 auto 20px;">
+      ${['💗','💖','💝','🩷','💓','🫀'].map((ic,i)=>`<div style="aspect-ratio:1;background:${i<3?'linear-gradient(135deg,#ffeef4,#fff)':'white'};border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 4px 12px rgba(255,133,161,.15);border:1.5px solid rgba(255,133,161,.2);">${ic}</div>`).join('')}
+    </div>
+
+    <div style="font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--text);margin-bottom:6px;">🎈 Pop Balloons</div>
+    <div style="display:flex;gap:12px;justify-content:center;max-width:320px;margin:0 auto 20px;">
+      ${["#ffb3c1","#c3b1e1","#b5ead7","#ffd6a5","#ffc8dd"].map((c,i)=>`<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:40px;height:50px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;background:${c};box-shadow:inset -4px -4px 10px rgba(0,0,0,.1);"></div><div style="width:1px;height:20px;background:rgba(0,0,0,.15);"></div></div>`).join('')}
+    </div>
+
+    <div style="font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--text);margin-bottom:6px;">💔 Forgiveness Meter™</div>
+    <div style="background:white;border-radius:20px;padding:20px;max-width:320px;margin:0 auto 20px;box-shadow:0 8px 25px rgba(255,133,161,.15);text-align:center;">
+      <div style="font-size:.65rem;letter-spacing:3px;color:var(--soft);margin-bottom:6px;">✦ COMPLETELY SCIENTIFIC ✦</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--text);font-style:italic;margin-bottom:4px;">The Forgiveness Meter™</div>
+      <div style="font-size:.75rem;color:var(--soft);margin-bottom:12px;">Advanced AI is calculating...</div>
+      <div style="font-family:'Playfair Display',serif;font-size:3rem;color:var(--rose);font-weight:700;">???%</div>
+      <div style="background:#f5e6ee;border-radius:50px;height:8px;overflow:hidden;margin:10px 0;"><div style="height:100%;width:100%;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:50px;"></div></div>
+      <div style="font-size:.7rem;color:var(--rose);font-weight:600;margin-bottom:10px;">⚡ ERROR: TOO MUCH LOVE DETECTED</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--text);font-style:italic;">💔 Cuteness Meter Broken</div>
+      <div style="font-size:.75rem;color:var(--soft);margin:4px 0 12px;">You are officially 120% more cute<br>than anyone else in the universe.</div>
+      <div style="background:linear-gradient(135deg,#8b1a3a,#c0304f);color:white;padding:10px 20px;border-radius:8px;font-weight:700;font-size:.9rem;">I LOVE YOU 💕</div>
+    </div>
+
+    <div style="font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--text);margin-bottom:6px;">🐱 Typewriter Note</div>
+    <div style="background:white;border-radius:20px;padding:20px;max-width:320px;margin:0 auto 20px;box-shadow:0 8px 25px rgba(255,133,161,.15);">
+      <div style="font-size:2.5rem;text-align:center;margin-bottom:8px;">🐱</div>
+      <div style="font-family:'Dancing Script',cursive;font-size:1.2rem;color:var(--rose);text-align:center;margin-bottom:10px;">Dear you...</div>
+      <div style="font-family:'Playfair Display',serif;font-size:.85rem;color:var(--text);line-height:1.7;font-style:italic;">I know sorry isn't always enough... but I mean every single letter of it. I never wanted to hurt you|</div>
+    </div>
+
+    <div style="font-family:'Dancing Script',cursive;font-size:1.6rem;color:var(--text);margin-bottom:6px;">💌 Final Message Card</div>
+    <div style="background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,238,244,.9));border-radius:25px;padding:25px;max-width:320px;margin:0 auto 30px;box-shadow:0 12px 40px rgba(255,133,161,.2);border:2px solid rgba(255,133,161,.3);text-align:center;">
+      <div style="font-size:4rem;margin-bottom:8px;">🤗</div>
+      <div style="font-family:'Dancing Script',cursive;font-size:1rem;color:var(--text);line-height:1.7;">[Your personal message glows here, customized just for them] ✨💌</div>
+      <div style="font-family:'Dancing Script',cursive;font-size:.9rem;color:var(--soft);margin-top:12px;">Thank you for reading this ❤️</div>
+      <div style="font-size:1rem;color:var(--rose);font-family:monospace;margin-top:4px;">/ᐠ ˵> ⩊ &lt;˵マ</div>
+    </div>
+  </div>`;
+}
+
+function exitPreview(){
+  document.getElementById('preview-screen').classList.remove('open');
+}
+
+function openPaywall(){
+  document.getElementById('paywall').classList.add('open');
+}
+
+function unlockAndStart(){
+  document.getElementById('entry-screen').style.display='none';
   startLoading();
 }
 
@@ -519,15 +510,19 @@ function startGfJourney(){
 function startLoading(){
   const ls=document.getElementById('loading-screen');
   ls.style.display='flex';
+  initBgParticles();
+  initFallingHearts();
   startMusic();
   let pct=0;
   const bar=document.getElementById('progressBar');
   const pctEl=document.getElementById('progressPct');
   const interval=setInterval(()=>{
     pct=Math.min(100,pct+Math.random()*3+.5);
-    bar.style.width=pct+'%';pctEl.textContent=Math.floor(pct)+'%';
+    bar.style.width=pct+'%';
+    pctEl.textContent=Math.floor(pct)+'%';
     if(pct>=100){
-      clearInterval(interval);pctEl.textContent='100%';
+      clearInterval(interval);
+      pctEl.textContent='100%';
       setTimeout(()=>{
         ls.style.opacity='0';ls.style.transition='opacity .5s';
         setTimeout(()=>{ls.style.display='none';showSection('sec-cards');},500);
@@ -555,7 +550,8 @@ function updateDots(){
   const dotsEl=document.getElementById('progressDots');
   dotsEl.innerHTML='';
   sections.forEach((s,i)=>{
-    const d=document.createElement('div');d.className='dot'+(i===currentSection?' active':'');
+    const d=document.createElement('div');
+    d.className='dot'+(i===currentSection?' active':'');
     dotsEl.appendChild(d);
   });
 }
@@ -563,18 +559,22 @@ function updateDots(){
 // ===================== CARDS =====================
 let revealedCards=0;
 function buildCards(){
-  const grid=document.getElementById('cardsGrid');grid.innerHTML='';revealedCards=0;
-  cardMessages.forEach((cm)=>{
-    const card=document.createElement('div');card.className='heart-card';
+  const grid=document.getElementById('cardsGrid');
+  grid.innerHTML='';revealedCards=0;
+  cardMessages.forEach((cm,i)=>{
+    const card=document.createElement('div');
+    card.className='heart-card';
     card.innerHTML=`<div class="card-front">${cm.icon}</div><div class="card-num">Tap me!</div><div class="card-message">${cm.msg}</div>`;
-    card.onclick=()=>revealCard(card);grid.appendChild(card);
+    card.onclick=()=>revealCard(card);
+    grid.appendChild(card);
   });
 }
 function revealCard(card){
   if(card.classList.contains('revealed'))return;
   card.classList.add('flipped');
   setTimeout(()=>{
-    card.classList.add('revealed');spawnPopHearts(card);spawnSparkles(card);
+    card.classList.add('revealed');
+    spawnPopHearts(card);spawnSparkles(card);
     revealedCards++;
     if(revealedCards>=cardMessages.length){launchConfetti();setTimeout(()=>document.getElementById('cardsNextBtn').style.display='block',600);}
   },300);
@@ -583,7 +583,8 @@ function spawnPopHearts(el){
   const rect=el.getBoundingClientRect();
   const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
   ['💗','💖','💕','✨'].forEach((h,i)=>{
-    const span=document.createElement('span');span.className='pop-heart';span.textContent=h;
+    const span=document.createElement('span');
+    span.className='pop-heart';span.textContent=h;
     span.style.left=(cx+(Math.random()-.5)*60)+'px';span.style.top=cy+'px';
     span.style.animationDelay=i*.08+'s';
     document.body.appendChild(span);setTimeout(()=>span.remove(),1200);
@@ -593,11 +594,14 @@ function spawnPopHearts(el){
 // ===================== BALLOONS =====================
 let poppedBalloons=0;
 function buildBalloons(){
-  const wrap=document.getElementById('balloonsWrap');wrap.innerHTML='';poppedBalloons=0;
+  const wrap=document.getElementById('balloonsWrap');
+  wrap.innerHTML='';poppedBalloons=0;
   balloonMessages.forEach((bm,i)=>{
-    const bal=document.createElement('div');bal.className='balloon';
+    const bal=document.createElement('div');
+    bal.className='balloon';
     bal.innerHTML=`<div class="balloon-body" style="background:${balloonColors[i]}">${balloonEmojis[i]}</div><div class="balloon-string"></div>`;
-    bal.onclick=()=>popBalloon(bal,bm);wrap.appendChild(bal);
+    bal.onclick=()=>popBalloon(bal,bm);
+    wrap.appendChild(bal);
   });
 }
 function popBalloon(bal,data){
@@ -620,39 +624,66 @@ function startMeter(){
   const display=document.getElementById('meterDisplay');
   const fill=document.getElementById('meterBarFill');
   const errorEl=document.getElementById('meterError');
+  // Reset
   display.textContent='???%';fill.style.width='0%';errorEl.classList.remove('show');
   ['meterBrokenTitle','meterBrokenSub','meterLoveBtn','meterSystem'].forEach(id=>document.getElementById(id).style.display='none');
   document.getElementById('meterExplode').classList.remove('boom');
   document.getElementById('meterNextBtn').style.display='none';
-  const qMarks=['???%','??!%','!??%','!!!%','∞%'];let qi=0;
-  const phase1=setInterval(()=>{display.textContent=qMarks[qi++%qMarks.length];},300);
+
+  const qMarks=['???%','??!%','!??%','!!!%','∞%'];
+  let qi=0;
+  // Phase 1: question marks cycling
+  const phase1=setInterval(()=>{
+    display.textContent=qMarks[qi++%qMarks.length];
+  },300);
+
+  // Phase 2: bar fills up
   setTimeout(()=>{
-    clearInterval(phase1);let pct=0;
+    clearInterval(phase1);
+    let pct=0;
     const phase2=setInterval(()=>{
-      pct=Math.min(100,pct+2);fill.style.width=pct+'%';display.textContent=pct+'%';
-      if(pct>=100){clearInterval(phase2);setTimeout(()=>meterExplode(),500);}
+      pct=Math.min(100,pct+2);
+      fill.style.width=pct+'%';
+      display.textContent=pct+'%';
+      if(pct>=100){
+        clearInterval(phase2);
+        // Over 100 — it explodes
+        setTimeout(()=>meterExplode(),500);
+      }
     },30);
   },1800);
 }
+
 function meterExplode(){
   const display=document.getElementById('meterDisplay');
   const fill=document.getElementById('meterBarFill');
   const errorEl=document.getElementById('meterError');
+
+  // Show error
   errorEl.classList.add('show');
+  // Shake the card
   const card=document.getElementById('meterCard');
-  card.style.animation='cardShake .5s ease';setTimeout(()=>card.style.animation='',600);
+  card.style.animation='cardShake .5s ease';
+  setTimeout(()=>card.style.animation='',600);
+
+  // Count beyond 100
   let over=100;
   const overCount=setInterval(()=>{
-    over+=Math.floor(Math.random()*15+5);display.textContent=over+'%';fill.style.width='100%';
+    over+=Math.floor(Math.random()*15+5);
+    display.textContent=over+'%';
+    fill.style.width='100%';
     fill.style.background='linear-gradient(90deg,#ff4d79,#f5c842,#ff85a1)';
     if(over>=200){
       clearInterval(overCount);
+      // BOOM
       setTimeout(()=>{
         document.getElementById('meterExplode').textContent='💥💕💥';
         document.getElementById('meterExplode').classList.add('boom');
         display.textContent='∞%';
         fill.style.background='linear-gradient(90deg,#f5c842,#ff85a1,#c39bd3)';
-        launchConfetti(30);spawnMassHearts();
+        launchConfetti(30);
+        spawnMassHearts();
+        // Show broken state
         setTimeout(()=>{
           errorEl.textContent='💔 CUTENESS METER OFFICIALLY BROKEN';
           document.getElementById('meterBrokenTitle').style.display='block';
@@ -664,7 +695,16 @@ function meterExplode(){
     }
   },80);
 }
-function afterMeter(){launchConfetti(20);document.getElementById('meterNextBtn').style.display='block';}
+
+function afterMeter(){
+  launchConfetti(20);
+  document.getElementById('meterNextBtn').style.display='block';
+}
+
+// Card shake keyframe injected
+const styleTag=document.createElement('style');
+styleTag.textContent='@keyframes cardShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px) rotate(-2deg)}40%{transform:translateX(8px) rotate(2deg)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}';
+document.head.appendChild(styleTag);
 
 // ===================== TYPEWRITER =====================
 let typewriterTimeout;
@@ -695,7 +735,8 @@ function showFinal(){
 
 // ===================== EFFECTS =====================
 function initBgParticles(){
-  const wrap=document.getElementById('bgParticles');if(wrap.children.length>0)return;
+  const wrap=document.getElementById('bgParticles');
+  if(wrap.children.length>0)return;
   const emojis=['✨','🌸','💕','⭐','🌟','💫','🩷'];
   for(let i=0;i<20;i++){
     const p=document.createElement('span');p.className='particle';
@@ -706,7 +747,8 @@ function initBgParticles(){
   }
 }
 function initFallingHearts(){
-  const wrap=document.getElementById('fallingHearts');if(wrap.children.length>0)return;
+  const wrap=document.getElementById('fallingHearts');
+  if(wrap.children.length>0)return;
   const hearts=['💗','💖','💕','🩷','❤️','💓'];
   for(let i=0;i<15;i++){
     const h=document.createElement('span');h.className='falling-heart';
@@ -753,7 +795,7 @@ function spawnMassHearts(){
 
 // Click sparkles
 document.addEventListener('click',(e)=>{
-  if(e.target.closest('#creator-screen,#gf-entry-screen'))return;
+  if(e.target.closest('#paywall,#preview-screen,#entry-screen'))return;
   for(let i=0;i<5;i++){
     const s=document.createElement('div');s.className='sparkle';
     const angle=(i/5)*Math.PI*2,dist=20+Math.random()*30;
@@ -764,71 +806,31 @@ document.addEventListener('click',(e)=>{
   }
 });
 
-// ===================== MUSIC (Web Audio - romantic melody) =====================
+// ===================== MUSIC =====================
 let audioCtx,musicPlaying=false,musicInterval,melodyIdx=0;
-
-// Romantic waltz-style melody with longer notes for softness
-const melody=[
-  261.63,0,329.63,0,392,0,329.63,0,
-  293.66,0,349.23,0,440,0,349.23,0,
-  329.63,0,392,0,493.88,0,392,0,
-  261.63,0,0,0,0,0,0,0,
-  293.66,0,369.99,0,440,0,369.99,0,
-  261.63,0,329.63,0,415.30,0,329.63,0,
-  246.94,0,311.13,0,392,0,311.13,0,
-  261.63,0,0,0,0,0,0,0
-];
-
-// Harmony layer (lower octave for richness)
-const harmony=[
-  130.81,0,164.81,0,196,0,164.81,0,
-  146.83,0,174.61,0,220,0,174.61,0,
-  164.81,0,196,0,246.94,0,196,0,
-  130.81,0,0,0,0,0,0,0,
-  146.83,0,184.99,0,220,0,184.99,0,
-  130.81,0,164.81,0,207.65,0,164.81,0,
-  123.47,0,155.56,0,196,0,155.56,0,
-  130.81,0,0,0,0,0,0,0
-];
-
-let harmonyIdx=0;
-
-function playNote(freq,vol=0.12,dur=0.5){
+const melody=[261.63,293.66,329.63,349.23,392,440,493.88,523.25,493.88,440,392,349.23,329.63,293.66,261.63,0,329.63,349.23,392,440,493.88,523.25,587.33,659.25,587.33,523.25,493.88,440,392,349.23,329.63,0];
+function playNote(freq){
   if(!audioCtx||freq===0)return;
-  const osc=audioCtx.createOscillator();
-  const g=audioCtx.createGain();
-  // Soft sine wave through a gentle lowpass
-  const filter=audioCtx.createBiquadFilter();
-  filter.type='lowpass';filter.frequency.setValueAtTime(800,audioCtx.currentTime);
-  osc.connect(filter);filter.connect(g);g.connect(audioCtx.destination);
-  osc.type='sine';
+  const osc=audioCtx.createOscillator(),g=audioCtx.createGain();
+  osc.connect(g);g.connect(audioCtx.destination);osc.type='sine';
   osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
   g.gain.setValueAtTime(0,audioCtx.currentTime);
-  g.gain.linearRampToValueAtTime(vol,audioCtx.currentTime+0.05);
-  g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+dur);
-  osc.start(audioCtx.currentTime);osc.stop(audioCtx.currentTime+dur);
+  g.gain.linearRampToValueAtTime(.15,audioCtx.currentTime+.01);
+  g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.4);
+  osc.start(audioCtx.currentTime);osc.stop(audioCtx.currentTime+.4);
 }
-
 function startMusic(){
   try{
     audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-    musicPlaying=true;
-    document.getElementById('musicToggle').classList.add('playing');
-    musicInterval=setInterval(()=>{
-      if(!musicPlaying)return;
-      playNote(melody[melodyIdx%melody.length],0.10,0.55);
-      playNote(harmony[harmonyIdx%harmony.length],0.06,0.55);
-      melodyIdx++;harmonyIdx++;
-    },280);
+    musicPlaying=true;document.getElementById('musicToggle').classList.add('playing');
+    musicInterval=setInterval(()=>{if(musicPlaying)playNote(melody[melodyIdx++%melody.length]);},400);
   }catch(e){}
 }
-
 document.getElementById('musicToggle').onclick=()=>{
   if(!audioCtx){startMusic();return;}
   musicPlaying=!musicPlaying;
   const btn=document.getElementById('musicToggle');
-  btn.classList.toggle('playing',musicPlaying);
-  btn.textContent=musicPlaying?'🎵':'🔇';
+  btn.classList.toggle('playing',musicPlaying);btn.textContent=musicPlaying?'🎵':'🔇';
 };
 
 // Init
