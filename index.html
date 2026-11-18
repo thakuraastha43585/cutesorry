@@ -642,6 +642,12 @@
           <p class="subtext" style="font-weight:700; margin-top:14px;">Your permanent card link 🔗</p>
           <div class="link-box" id="shareLink"></div>
           <button class="pill" style="margin-top:10px;" onclick="copyShareLink()">Copy Link</button>
+
+          <div id="qrWrap" style="display:none; margin-top:20px; width:100%;">
+            <p class="subtext" style="font-weight:700;">Or scan this cute QR 📱</p>
+            <canvas id="qrCanvas" style="width:250px; max-width:85%; height:auto; border-radius:22px; box-shadow:0 8px 20px rgba(var(--shadow-rgb),.25); margin-top:6px;"></canvas>
+            <button class="pill" style="margin-top:12px;" onclick="downloadQR()">⬇️ Download QR</button>
+          </div>
         </div>
         <div id="viewerNote" style="display:none; margin-top:14px;">
           <button class="pill ghost" onclick="location.href=location.pathname">Make Your Own Men's Day Card</button>
@@ -653,7 +659,7 @@
         <div class="msg-paper">
           <div class="tag" id="msgTag">Wish #1</div>
           <h4 id="msgTitle">—</h4>
-          <div id="msgGifWrap" style="display:none;" class="gif-card"><img id="msgGif" alt="Men's Day gif"></div>
+          <div id="msgGifWrap" style="display:none;" class="gif-card"><img id="msgGif" alt="Men's Day gif"><img id="msgGif2" alt="Men's Day gif" style="display:none; margin-top:6px;"></div>
           <div class="gif-note" id="msgNote" style="display:none;"></div>
           <p id="msgText">—</p>
           <button class="pill small2" id="msgNextBtn" onclick="closeMsg()">Okay 💙</button>
@@ -705,7 +711,10 @@ const GIFS = {
     "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3d204ejExcXRodHRqNzRjM3hjYnc4ZG5uZDQ4MjBpNmNmbWNvbWc2ayZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/lOlQiHAYE1VCJK77Ok/giphy.gif",
     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3I1OWp2MGJueWthN2hoYjBkYTJuZ2luZ25vc2VxaWFmZ3dnZmpmbCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pmjCOOtYxqICBa1olL/giphy.gif",
     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3I1OWp2MGJueWthN2hoYjBkYTJuZ2luZ25vc2VxaWFmZ3dnZmpmbCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/pmjCOOtYxqICBa1olL/giphy.gif",
-    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHR1dmIxYW5ucjNyYm05eWFmYWRkNTdkNm5kYWUyN2dxZzJ4bDA0ZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/fjH72qTrpfapyeF4qO/giphy.gif"
+    [
+      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHR1dmIxYW5ucjNyYm05eWFmYWRkNTdkNm5kYWUyN2dxZzJ4bDA0ZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/fjH72qTrpfapyeF4qO/giphy.gif",
+      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExejN1ZGs0a2V0cHJqNXl3a3d2a2MwMnJhMjh5dno3dTN6MmtkYWV0diZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/iY25xIloX4bkwhcJJG/giphy.gif"
+    ]
   ]
 };
 const IMG = {
@@ -959,7 +968,7 @@ function popBalloon(n, ev){
   const g = GIFS.balloons && GIFS.balloons[n-1];
   const gw = document.getElementById('msgGifWrap');
   const note = document.getElementById('msgNote');
-  if(g){ document.getElementById('msgGif').src = g; gw.style.display = 'block'; note.innerText = GIF_NOTES[n-1] || ''; note.style.display = GIF_NOTES[n-1] ? 'block' : 'none'; } else { gw.style.display = 'none'; note.style.display = 'none'; }
+  if(g){ const gl = [].concat(g); document.getElementById('msgGif').src = gl[0]; const g2 = document.getElementById('msgGif2'); if(gl[1]){ g2.src = gl[1]; g2.style.display = 'block'; } else { g2.style.display = 'none'; g2.removeAttribute('src'); } gw.style.display = 'block'; note.innerText = GIF_NOTES[n-1] || ''; note.style.display = GIF_NOTES[n-1] ? 'block' : 'none'; } else { gw.style.display = 'none'; note.style.display = 'none'; }
   document.getElementById('msgNextBtn').innerText = count === 4 ? 'Thank you 💙' : 'Okay 💙';
   setTimeout(()=>document.getElementById('msgModal').classList.add('show'), 320);
 }
@@ -1302,6 +1311,110 @@ async function completeOrder(){
 
   document.getElementById('shareLink').innerText = shortUrl;
   window.__shareUrl = shortUrl;
+  makeCuteQR(shortUrl);
+}
+
+
+/* ============ CUTE QR CODE ============
+   Drawn right after the payment, once the share link exists. The QR is built
+   with the qrcode-generator library (high error-correction so a heart can sit
+   in the middle), then painted by hand on a canvas: round dots, rounded
+   corner eyes, theme colours (they follow the chosen recipient), bunting,
+   sparkles and a little heart badge. */
+function rrPath(ctx,x,y,w,h,r){
+  ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+function drawHeart(ctx,cx,cy,s){
+  ctx.beginPath(); ctx.moveTo(cx,cy+s*0.9);
+  ctx.bezierCurveTo(cx-s*1.6,cy-s*0.1,cx-s*0.9,cy-s*1.3,cx,cy-s*0.45);
+  ctx.bezierCurveTo(cx+s*0.9,cy-s*1.3,cx+s*1.6,cy-s*0.1,cx,cy+s*0.9);
+  ctx.fill();
+}
+async function makeCuteQR(url){
+  const wrap = document.getElementById('qrWrap');
+  const canvas = document.getElementById('qrCanvas');
+  try{
+    if(typeof qrcode === 'undefined') throw new Error('QR library not loaded');
+    try{ await document.fonts.load("700 34px Caveat"); }catch(_){}
+    const cs = getComputedStyle(document.body);
+    const v = n => cs.getPropertyValue(n).trim();
+    const pill=v('--pill'), dark=v('--pill-dark'), gold=v('--gold'), cream=v('--cream');
+    const bls=[v('--bl1'),v('--bl2'),v('--bl3'),v('--bl4'),v('--bl5')];
+
+    const qr = qrcode(0,'H'); qr.addData(url); qr.make();
+    const n = qr.getModuleCount();
+    const W=360, H=440, S=2;
+    canvas.width=W*S; canvas.height=H*S;
+    const ctx = canvas.getContext('2d'); ctx.scale(S,S);
+
+    // card background + border
+    const bg = ctx.createLinearGradient(0,0,0,H); bg.addColorStop(0,cream); bg.addColorStop(1,'#ffffff');
+    rrPath(ctx,0,0,W,H,26); ctx.fillStyle=bg; ctx.fill();
+    rrPath(ctx,7,7,W-14,H-14,22); ctx.lineWidth=3; ctx.strokeStyle=gold; ctx.setLineDash([2,7]); ctx.lineCap='round'; ctx.stroke(); ctx.setLineDash([]);
+
+    // bunting
+    ctx.strokeStyle=pill; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(24,20); ctx.quadraticCurveTo(W/2,34,W-24,20); ctx.stroke();
+    for(let i=0;i<9;i++){
+      const t=(i+.5)/9, x=24+t*(W-48), y=20+Math.sin(t*Math.PI)*7.5;
+      ctx.fillStyle=bls[i%5]; ctx.beginPath(); ctx.moveTo(x-9,y); ctx.lineTo(x+9,y); ctx.lineTo(x,y+18); ctx.closePath(); ctx.fill();
+    }
+
+    // heading
+    ctx.textAlign='center'; ctx.fillStyle=pill;
+    ctx.font="700 36px Caveat, cursive"; ctx.fillText("Happy Men's Day!",W/2,76);
+    ctx.font="700 14px Quicksand, sans-serif"; ctx.fillStyle=v('--muted2');
+    ctx.fillText('A surprise for ' + (state.to || 'you') + ' · scan to open',W/2,98);
+
+    // white plate behind the QR
+    const Q=262, qx=(W-Q)/2, qy=116, pad=14;
+    ctx.save(); ctx.shadowColor='rgba(0,0,0,.15)'; ctx.shadowBlur=12; ctx.shadowOffsetY=4;
+    rrPath(ctx,qx-pad,qy-pad,Q+pad*2,Q+pad*2,24); ctx.fillStyle='#fff'; ctx.fill(); ctx.restore();
+    rrPath(ctx,qx-pad,qy-pad,Q+pad*2,Q+pad*2,24); ctx.lineWidth=2.5; ctx.strokeStyle=gold; ctx.stroke();
+
+    // modules as round dots (eyes drawn separately)
+    const m = Q/n;
+    const isEye=(r,c)=>(r<7&&c<7)||(r<7&&c>=n-7)||(r>=n-7&&c<7);
+    const mid=Q/2, logoR=Q*0.11;
+    for(let r=0;r<n;r++) for(let c=0;c<n;c++){
+      if(!qr.isDark(r,c) || isEye(r,c)) continue;
+      const cx=qx+(c+.5)*m, cy=qy+(r+.5)*m;
+      if(Math.hypot(cx-(qx+mid),cy-(qy+mid)) < logoR+m*0.9) continue;
+      ctx.fillStyle=((r*7+c*3)%5===0)?dark:pill;
+      rrPath(ctx,cx-m*0.49,cy-m*0.49,m*0.98,m*0.98,m*0.3); ctx.fill();
+    }
+    // rounded eyes
+    const eye=(x0,y0)=>{
+      ctx.lineWidth=m; ctx.strokeStyle=dark; rrPath(ctx,x0+m/2,y0+m/2,6*m,6*m,m*2.2); ctx.stroke();
+      ctx.fillStyle=pill; rrPath(ctx,x0+2*m,y0+2*m,3*m,3*m,m*1.1); ctx.fill();
+    };
+    eye(qx,qy); eye(qx+(n-7)*m,qy); eye(qx,qy+(n-7)*m);
+
+    // heart badge in the middle
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(qx+mid,qy+mid,logoR,0,Math.PI*2); ctx.fill();
+    ctx.lineWidth=2.5; ctx.strokeStyle=gold; ctx.stroke();
+    ctx.fillStyle=pill; drawHeart(ctx,qx+mid,qy+mid+1,logoR*0.5);
+
+    // sparkles + footer
+    ctx.fillStyle=gold; ctx.font="22px sans-serif";
+    ctx.fillText('✦',30,150); ctx.fillText('✦',W-30,210); ctx.fillText('✦',32,330); ctx.fillText('✦',W-32,120);
+    ctx.fillStyle=pill; ctx.font="700 28px Caveat, cursive";
+    ctx.fillText('Scan me 💙',W/2,H-32);
+    wrap.style.display='block';
+  }catch(e){
+    console.error('QR generation failed:', e);
+    wrap.style.display='none';
+  }
+}
+function downloadQR(){
+  const canvas = document.getElementById('qrCanvas');
+  canvas.toBlob(blob=>{
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'mens-day-qr-' + ((state.to || 'card').replace(/\s+/g,'-').toLowerCase()) + '.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  }, 'image/png');
 }
 
 /* ============ LINK SHORTENING ============
@@ -1406,5 +1519,6 @@ setRelation('father');
 </script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 </body>
 </html>
